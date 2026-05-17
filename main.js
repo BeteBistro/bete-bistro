@@ -64,7 +64,7 @@
     if (shouldCollapse && !isCollapsed) {
       isCollapsed = true;
       header.classList.add('is-collapsed');
-      setTimeout(showBtn, 400);
+      setTimeout(showBtn, 270);
     } else if (!shouldCollapse && isCollapsed) {
       isCollapsed = false;
       // Se a gaveta tiver aberta, fecha junto
@@ -178,11 +178,11 @@
   /* ============================================================
      3. HERO — PARALLAX (vídeo e ondinha)
 
-     Vídeo: sobe mais devagar que o scroll (translateY positivo). Cropado pelo
-     overflow:hidden do hero, dando sensação de "afundar" sob a ondinha.
+     Vídeo: sobe mais devagar que o scroll (translateY positivo). Fator pequeno
+     pra não chegar perto da ondinha. Mobile usa fator menor que desktop
+     (mobile tem menos espaço abaixo do vídeo).
      Ondinha: background-position-x cresce ao scrollar pra baixo (tile infinito).
 
-     Fator 0.3 = a cada 100px scrollados, elemento move 30px.
      Respeita prefers-reduced-motion.
      ============================================================ */
   var prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -195,20 +195,26 @@
     if (hero && (heroVideo || heroOndinha)) {
       var lastScrollY = window.scrollY;
       var ticking     = false;
-      var factor      = 0.3;
+      var ondinhaFactor = 0.3;            // horizontal, sem risco de colisão
+
+      function getVideoFactor() {
+        // Mobile tem pouco espaço entre vídeo e ondinha — fator menor pra não encostar
+        return window.innerWidth <= 768 ? 0.08 : 0.15;
+      }
+
+      var videoFactor = getVideoFactor();
 
       function updateParallax() {
         // Limita ao tamanho do hero (depois que sai da viewport, não precisa atualizar)
         var heroHeight = hero.offsetHeight;
         var sy = Math.min(lastScrollY, heroHeight);
-        var offset = sy * factor;
 
         if (heroVideo) {
-          heroVideo.style.transform = 'translate3d(0, ' + offset + 'px, 0)';
+          heroVideo.style.transform = 'translate3d(0, ' + (sy * videoFactor) + 'px, 0)';
         }
         if (heroOndinha) {
           // background-position-x: positivo = bg "anda" pra direita (ondinha vai pra direita)
-          heroOndinha.style.backgroundPositionX = offset + 'px';
+          heroOndinha.style.backgroundPositionX = (sy * ondinhaFactor) + 'px';
         }
 
         ticking = false;
@@ -223,6 +229,10 @@
       }
 
       window.addEventListener('scroll', onScroll, { passive: true });
+      window.addEventListener('resize', function () {
+        videoFactor = getVideoFactor();
+        updateParallax();
+      });
       updateParallax(); // estado inicial (caso a página carregue já scrollada)
     }
   }
@@ -236,10 +246,10 @@
   var rotatorEl = document.querySelector('.hero__title-rotator');
   var palavras = ['Artesanal', 'Caseira', 'De mãe', 'De vó', 'Afetiva', 'Saborosa'];
   var rotatorIdx = 0;
-  var displayTime = 3000;             // ms que cada palavra fica estática
-  var charDelay   = 40;               // ms entre cascata de cada char
-  var animOutMs   = 500;              // duração da animação de saída por char
-  var animInMs    = 600;              // duração da animação de entrada por char
+  var displayTime = 1000;             // ms que cada palavra fica estática
+  var charDelay   = 30;               // ms entre cascata de cada char
+  var animOutMs   = 400;              // duração da animação de saída por char
+  var animInMs    = 400;              // duração da animação de entrada por char (mesma — simétrica)
 
   function splitWordToChars(word) {
     if (!rotatorEl) return;

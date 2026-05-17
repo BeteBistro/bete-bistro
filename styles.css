@@ -211,7 +211,7 @@ body {
 .header__nav-item {
   position: relative;
   margin-left: var(--scale-1000);  /* 40px */
-  transition: margin-left 0.45s cubic-bezier(0, 0.2, 0.35, 1);
+  transition: margin-left 0.30s cubic-bezier(0, 0.2, 0.35, 1);
 }
 
 .header__nav-item:first-child {
@@ -220,10 +220,10 @@ body {
 
 /* Stagger expand pra margin-left — pequeno pra ser quase simultâneo */
 .header__nav-item:nth-child(1) { transition-delay: 0s; }
-.header__nav-item:nth-child(2) { transition-delay: 0.05s; }
-.header__nav-item:nth-child(3) { transition-delay: 0.1s; }
-.header__nav-item:nth-child(4) { transition-delay: 0.15s; }
-.header__nav-item:nth-child(5) { transition-delay: 0.2s; }
+.header__nav-item:nth-child(2) { transition-delay: 0.033s; }
+.header__nav-item:nth-child(3) { transition-delay: 0.066s; }
+.header__nav-item:nth-child(4) { transition-delay: 0.10s; }
+.header__nav-item:nth-child(5) { transition-delay: 0.133s; }
 
 .header__nav-link {
   font-family: var(--font-subtitulo);
@@ -239,9 +239,9 @@ body {
   max-width: 300px;
   opacity: 1;
   transition:
-    letter-spacing 0.45s cubic-bezier(0, 0.2, 0.35, 1),
-    max-width 0.45s cubic-bezier(0, 0.2, 0.35, 1),
-    opacity 0.15s ease,
+    letter-spacing 0.30s cubic-bezier(0, 0.2, 0.35, 1),
+    max-width 0.30s cubic-bezier(0, 0.2, 0.35, 1),
+    opacity 0.10s ease,
     color 0.15s ease;
 }
 
@@ -268,40 +268,40 @@ body {
 
 /* Stagger expand — opacity volta primeiro (delay 0), depois letter-spacing e max-width */
 .header__nav-item:nth-child(1) .header__nav-link { transition-delay: 0s, 0s, 0s, 0s; }
-.header__nav-item:nth-child(2) .header__nav-link { transition-delay: 0.05s, 0.05s, 0.05s, 0s; }
-.header__nav-item:nth-child(3) .header__nav-link { transition-delay: 0.1s, 0.1s, 0.1s, 0s; }
-.header__nav-item:nth-child(4) .header__nav-link { transition-delay: 0.15s, 0.15s, 0.15s, 0s; }
-.header__nav-item:nth-child(5) .header__nav-link { transition-delay: 0.2s, 0.2s, 0.2s, 0s; }
+.header__nav-item:nth-child(2) .header__nav-link { transition-delay: 0.033s, 0.033s, 0.033s, 0s; }
+.header__nav-item:nth-child(3) .header__nav-link { transition-delay: 0.066s, 0.066s, 0.066s, 0s; }
+.header__nav-item:nth-child(4) .header__nav-link { transition-delay: 0.10s, 0.10s, 0.10s, 0s; }
+.header__nav-item:nth-child(5) .header__nav-link { transition-delay: 0.133s, 0.133s, 0.133s, 0s; }
 
 /* Collapsed state — nav some letra por letra, esquerda → direita */
 .header.is-collapsed .header__nav-item {
   margin-left: 0;
-  transition: margin-left 0.4s cubic-bezier(0.55, 0, 1, 0.3);
+  transition: margin-left 0.27s cubic-bezier(0.55, 0, 1, 0.3);
 }
 
 /* Stagger collapse pra margin-left */
 .header.is-collapsed .header__nav-item:nth-child(1) { transition-delay: 0s; }
-.header.is-collapsed .header__nav-item:nth-child(2) { transition-delay: 0.05s; }
-.header.is-collapsed .header__nav-item:nth-child(3) { transition-delay: 0.1s; }
-.header.is-collapsed .header__nav-item:nth-child(4) { transition-delay: 0.15s; }
-.header.is-collapsed .header__nav-item:nth-child(5) { transition-delay: 0.2s; }
+.header.is-collapsed .header__nav-item:nth-child(2) { transition-delay: 0.033s; }
+.header.is-collapsed .header__nav-item:nth-child(3) { transition-delay: 0.066s; }
+.header.is-collapsed .header__nav-item:nth-child(4) { transition-delay: 0.10s; }
+.header.is-collapsed .header__nav-item:nth-child(5) { transition-delay: 0.133s; }
 
 .header.is-collapsed .header__nav-link {
   letter-spacing: -0.5em;
   max-width: 0;
   opacity: 0;
   transition:
-    letter-spacing 0.4s cubic-bezier(0.55, 0, 1, 0.3),
-    max-width 0.4s cubic-bezier(0.55, 0, 1, 0.3),
-    opacity 0.15s ease 0.25s;
+    letter-spacing 0.27s cubic-bezier(0.55, 0, 1, 0.3),
+    max-width 0.27s cubic-bezier(0.55, 0, 1, 0.3),
+    opacity 0.10s ease 0.167s;
 }
 
 /* Stagger collapse — opacity só some no FIM (delay = duração das outras - duração do opacity) */
-.header.is-collapsed .header__nav-item:nth-child(1) .header__nav-link { transition-delay: 0s, 0s, 0.25s; }
-.header.is-collapsed .header__nav-item:nth-child(2) .header__nav-link { transition-delay: 0.05s, 0.05s, 0.30s; }
-.header.is-collapsed .header__nav-item:nth-child(3) .header__nav-link { transition-delay: 0.1s, 0.1s, 0.35s; }
-.header.is-collapsed .header__nav-item:nth-child(4) .header__nav-link { transition-delay: 0.15s, 0.15s, 0.40s; }
-.header.is-collapsed .header__nav-item:nth-child(5) .header__nav-link { transition-delay: 0.2s, 0.2s, 0.45s; }
+.header.is-collapsed .header__nav-item:nth-child(1) .header__nav-link { transition-delay: 0s, 0s, 0.167s; }
+.header.is-collapsed .header__nav-item:nth-child(2) .header__nav-link { transition-delay: 0.033s, 0.033s, 0.20s; }
+.header.is-collapsed .header__nav-item:nth-child(3) .header__nav-link { transition-delay: 0.066s, 0.066s, 0.233s; }
+.header.is-collapsed .header__nav-item:nth-child(4) .header__nav-link { transition-delay: 0.10s, 0.10s, 0.267s; }
+.header.is-collapsed .header__nav-item:nth-child(5) .header__nav-link { transition-delay: 0.133s, 0.133s, 0.30s; }
 
 
 /* ----- Dropdown no hover (nav expandido com filhas) ----- */
@@ -456,12 +456,12 @@ body {
 
 .menu-btn.is-appearing {
   visibility: visible;
-  animation: menuAppear 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  animation: menuAppear 0.27s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
 }
 
 .menu-btn.is-disappearing {
   visibility: visible;
-  animation: menuDisappear 0.4s cubic-bezier(0.6, -0.55, 0.735, 0.045) forwards;
+  animation: menuDisappear 0.27s cubic-bezier(0.6, -0.55, 0.735, 0.045) forwards;
 }
 
 
@@ -746,9 +746,10 @@ body {
 
 /* ---------- ROTATOR DO TÍTULO (palavra que muda) ----------
    Cada caractere vira <span class="hero__title-char">. Cascata via --char-i (set no JS).
-   Entrada: sobe + fade in. Saída: sobe + fade out. */
+   Entrada e saída são MESMA curva, start/end trocados (simétricas). */
 .hero__title-rotator {
   display: inline-block;
+  white-space: nowrap;                 /* não quebra entre chars (que são inline-block) */
 }
 
 .hero__title-char {
@@ -757,25 +758,23 @@ body {
 }
 
 .hero__title-char:not(.is-leaving) {
-  animation: hero-char-in 600ms cubic-bezier(0.22, 1, 0.36, 1) backwards;
-  animation-delay: calc(var(--char-i, 0) * 40ms);
+  animation: hero-char-in 400ms cubic-bezier(0.22, 1, 0.36, 1) backwards;
+  animation-delay: calc(var(--char-i, 0) * 30ms);
 }
 
 .hero__title-char.is-leaving {
-  animation: hero-char-out 500ms cubic-bezier(0.7, 0, 0.84, 0) forwards;
-  animation-delay: calc(var(--char-i, 0) * 40ms);
+  animation: hero-char-out 400ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  animation-delay: calc(var(--char-i, 0) * 30ms);
 }
 
 @keyframes hero-char-in {
   from { transform: translateY(40%); opacity: 0; }
-  60%  { opacity: 1; }
-  to   { transform: translateY(0);    opacity: 1; }
+  to   { transform: translateY(0);   opacity: 1; }
 }
 
 @keyframes hero-char-out {
-  from { transform: translateY(0);    opacity: 1; }
-  40%  { opacity: 0; }
-  to   { transform: translateY(-40%); opacity: 0; }
+  from { transform: translateY(0);   opacity: 1; }
+  to   { transform: translateY(40%); opacity: 0; }
 }
 
 @media (prefers-reduced-motion: reduce) {
