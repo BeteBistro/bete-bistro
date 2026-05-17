@@ -780,14 +780,15 @@ body {
 
 .hero__title-char.is-leaving {
   animation-name: hero-char-collapse-width, hero-char-fade-out;
-  animation-duration: 400ms, 300ms;
-  animation-timing-function: cubic-bezier(0.55, 0, 1, 0.3), ease-in;
+  animation-duration: 400ms, 120ms;
+  animation-timing-function: cubic-bezier(0.55, 0, 1, 0.3), linear;
   animation-fill-mode: forwards, forwards;
   /* Cascata REVERSA (do último char pro primeiro) — acompanha o colapso visual,
-     que comprime a palavra pra esquerda. Char da direita some primeiro. */
+     que comprime a palavra pra esquerda. Char da direita some primeiro.
+     Opacity SÓ começa em 70% do colapso pra deixar o movimento aparecer antes. */
   animation-delay:
     calc((var(--char-count, 1) - 1 - var(--char-i, 0)) * 30ms),
-    calc((var(--char-count, 1) - 1 - var(--char-i, 0)) * 30ms + 100ms);
+    calc((var(--char-count, 1) - 1 - var(--char-i, 0)) * 30ms + 280ms);
 }
 
 @keyframes hero-char-expand-width {
