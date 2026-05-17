@@ -201,6 +201,11 @@
      (mobile tem menos espaço abaixo do vídeo).
      Ondinha: background-position-x cresce ao scrollar pra baixo (tile infinito).
 
+     LERP: em vez de mapear scroll → posição direto (linear, sem pico de velocidade),
+     o valor atual persegue o alvo com interpolação suave. Isso cria aceleração
+     natural ao começar a scrollar e desaceleração ao parar. O parallax responde
+     ao scroll com a mesma filosofia de pico das outras animações.
+
      Respeita prefers-reduced-motion.
      ============================================================ */
   var prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -211,47 +216,76 @@
     var hero        = document.getElementById('hero');
 
     if (hero && (heroVideo || heroOndinha)) {
-      var lastScrollY = window.scrollY;
-      var ticking     = false;
       var ondinhaFactor = 0.3;            // horizontal, sem risco de colisão
+      var lerpSpeed     = 0.1;            // 0.08–0.12 = suave; 0.15+ = snappy
 
       function getVideoFactor() {
-        // Mobile tem pouco espaço entre vídeo e ondinha — fator menor pra não encostar
         return window.innerWidth <= 768 ? 0.08 : 0.15;
       }
 
       var videoFactor = getVideoFactor();
 
-      function updateParallax() {
-        // Limita ao tamanho do hero (depois que sai da viewport, não precisa atualizar)
+      // Estado do lerp: current persegue target a cada frame
+      var videoY       = 0;
+      var videoTarget  = 0;
+      var ondinhaX     = 0;
+      var ondinhaTarget = 0;
+      var parallaxRunning = false;
+
+      function updateParallaxTargets() {
         var heroHeight = hero.offsetHeight;
-        var sy = Math.min(lastScrollY, heroHeight);
+        var sy = Math.min(window.scrollY, heroHeight);
+        videoTarget  = sy * videoFactor;
+        ondinhaTarget = sy * ondinhaFactor;
+      }
+
+      function parallaxLoop() {
+        // Lerp: current se aproxima do target por fração fixa por frame
+        videoY   += (videoTarget - videoY) * lerpSpeed;
+        ondinhaX += (ondinhaTarget - ondinhaX) * lerpSpeed;
 
         if (heroVideo) {
-          heroVideo.style.transform = 'translate3d(0, ' + (sy * videoFactor) + 'px, 0)';
+          heroVideo.style.transform = 'translate3d(0, ' + videoY + 'px, 0)';
         }
         if (heroOndinha) {
-          // background-position-x: positivo = bg "anda" pra direita (ondinha vai pra direita)
-          heroOndinha.style.backgroundPositionX = (sy * ondinhaFactor) + 'px';
+          heroOndinha.style.backgroundPositionX = ondinhaX + 'px';
         }
 
-        ticking = false;
+        // Continua o loop enquanto ainda tem diferença perceptível (> 0.1px)
+        var diffV = Math.abs(videoTarget - videoY);
+        var diffO = Math.abs(ondinhaTarget - ondinhaX);
+        if (diffV > 0.1 || diffO > 0.1) {
+          requestAnimationFrame(parallaxLoop);
+        } else {
+          // Snap final pra evitar drift residual
+          videoY = videoTarget;
+          ondinhaX = ondinhaTarget;
+          if (heroVideo) heroVideo.style.transform = 'translate3d(0, ' + videoY + 'px, 0)';
+          if (heroOndinha) heroOndinha.style.backgroundPositionX = ondinhaX + 'px';
+          parallaxRunning = false;
+        }
       }
 
       function onScroll() {
-        lastScrollY = window.scrollY;
-        if (!ticking) {
-          window.requestAnimationFrame(updateParallax);
-          ticking = true;
+        updateParallaxTargets();
+        if (!parallaxRunning) {
+          parallaxRunning = true;
+          requestAnimationFrame(parallaxLoop);
         }
       }
 
       window.addEventListener('scroll', onScroll, { passive: true });
       window.addEventListener('resize', function () {
         videoFactor = getVideoFactor();
-        updateParallax();
+        updateParallaxTargets();
       });
-      updateParallax(); // estado inicial (caso a página carregue já scrollada)
+
+      // Estado inicial (caso a página carregue já scrollada)
+      updateParallaxTargets();
+      videoY = videoTarget;
+      ondinhaX = ondinhaTarget;
+      if (heroVideo) heroVideo.style.transform = 'translate3d(0, ' + videoY + 'px, 0)';
+      if (heroOndinha) heroOndinha.style.backgroundPositionX = ondinhaX + 'px';
     }
   }
 

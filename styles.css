@@ -178,8 +178,8 @@ body {
   width: var(--logo-size);
   height: var(--logo-size);
   transition:
-    width 0.3s ease-out,
-    height 0.3s ease-out;
+    width 0.3s var(--ease-entrada),
+    height 0.3s var(--ease-entrada);
 }
 
 .header__logo img {
@@ -211,7 +211,7 @@ body {
 .header__nav-item {
   position: relative;
   margin-left: var(--scale-1000);  /* 40px */
-  transition: margin-left 0.30s cubic-bezier(0, 0.2, 0.35, 1);
+  transition: margin-left 0.30s var(--ease-entrada);
 }
 
 .header__nav-item:first-child {
@@ -239,9 +239,9 @@ body {
   max-width: 300px;
   opacity: 1;
   transition:
-    letter-spacing 0.30s cubic-bezier(0, 0.2, 0.35, 1),
-    max-width 0.30s cubic-bezier(0, 0.2, 0.35, 1),
-    opacity 0.10s ease,
+    letter-spacing 0.30s var(--ease-entrada),
+    max-width 0.30s var(--ease-entrada),
+    opacity 0.10s var(--ease-entrada),
     color 0.15s ease;
 }
 
@@ -278,7 +278,7 @@ body {
 /* Collapsed state — nav some letra por letra, esquerda → direita */
 .header.is-collapsed .header__nav-item {
   margin-left: 0;
-  transition: margin-left 0.27s cubic-bezier(0.55, 0, 1, 0.3);
+  transition: margin-left 0.27s var(--ease-saida);
 }
 
 /* Stagger collapse pra margin-left */
@@ -293,9 +293,9 @@ body {
   max-width: 0;
   opacity: 0;
   transition:
-    letter-spacing 0.27s cubic-bezier(0.55, 0, 1, 0.3),
-    max-width 0.27s cubic-bezier(0.55, 0, 1, 0.3),
-    opacity 0.10s ease 0.167s;
+    letter-spacing 0.27s var(--ease-saida),
+    max-width 0.27s var(--ease-saida),
+    opacity 0.10s var(--ease-saida) 0.167s;
 }
 
 /* Stagger collapse — opacity só some no FIM (delay = duração das outras - duração do opacity) */
@@ -322,8 +322,8 @@ body {
   transform: translateY(-8px) scale(0.96);
   transform-origin: top left;
   transition:
-    opacity 0.12s ease-in 0.13s,                 /* desce só no fim do unhover */
-    transform 0.25s ease-in,
+    opacity 0.12s var(--ease-saida) 0.13s,           /* desce só no fim do unhover */
+    transform 0.25s var(--ease-saida),
     visibility 0s linear 0.25s;
   z-index: 90;
 }
@@ -334,8 +334,8 @@ body {
   visibility: visible;
   transform: translateY(0) scale(1);
   transition:
-    opacity 0.15s ease-out,                       /* sobe rápido no começo */
-    transform 0.25s ease-out,
+    opacity 0.15s var(--ease-entrada),               /* sobe rápido no começo */
+    transform 0.25s var(--ease-entrada),
     visibility 0s;
 }
 
@@ -418,15 +418,15 @@ body {
   height: 50%;
   /* Recalcula stroke local baseado no tamanho REAL do SVG (metade do botão) */
   --icon-stroke: calc(1px + (var(--icon-size) / 2) / 24);
-  transition: transform 0.4s cubic-bezier(0.65, 0, 0.35, 1);
+  transition: transform 0.4s var(--ease-entrada);
 }
 
 .menu-btn__line {
   transform-origin: 12px 12px;
   transform-box: view-box;
   transition:
-    transform 0.4s cubic-bezier(0.65, 0, 0.35, 1),
-    opacity 0.2s ease;
+    transform 0.4s var(--ease-entrada),
+    opacity 0.2s var(--ease-entrada);
 }
 
 /* --- Estado aberto: morph + flip --- */
@@ -463,12 +463,12 @@ body {
 
 .menu-btn.is-appearing {
   visibility: visible;
-  animation: menuAppear 0.27s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  animation: menuAppear 0.27s var(--ease-entrada) forwards;
 }
 
 .menu-btn.is-disappearing {
   visibility: visible;
-  animation: menuDisappear 0.27s cubic-bezier(0.6, -0.55, 0.735, 0.045) forwards;
+  animation: menuDisappear 0.27s var(--ease-saida) forwards;
 }
 
 
@@ -513,8 +513,8 @@ body {
   transform: scale(0);
   transform-origin: top right;
   transition:
-    transform 0.35s cubic-bezier(0, 0.2, 0.35, 1),   /* ease-out pro expand */
-    opacity 0.2s ease-out,
+    transform 0.35s var(--ease-entrada),
+    opacity 0.2s var(--ease-entrada),
     visibility 0s linear 0.35s;
   pointer-events: auto;
 }
@@ -529,16 +529,16 @@ body {
   visibility: visible;
   transform: scale(1);
   transition:
-    transform 0.35s cubic-bezier(0, 0.2, 0.35, 1),
-    opacity 0.2s ease-out,
+    transform 0.35s var(--ease-entrada),
+    opacity 0.2s var(--ease-entrada),
     visibility 0s linear 0s;
 }
 
-/* --- Fechando (collapse com ease-in, opacity só no fim) --- */
+/* --- Fechando (saída, opacity só no fim) --- */
 .drawer.is-closing .drawer__panel {
   transition:
-    transform 0.28s cubic-bezier(0.55, 0, 1, 0.3),    /* ease-in pro collapse */
-    opacity 0.12s ease-in 0.16s,                       /* desce só no fim */
+    transform 0.28s var(--ease-saida),
+    opacity 0.12s var(--ease-saida) 0.16s,
     visibility 0s linear 0.28s;
 }
 
@@ -596,7 +596,7 @@ body {
 .drawer__chevron {
   width: 24px;
   height: 24px;
-  transition: transform 0.3s cubic-bezier(0.65, 0, 0.35, 1);
+  transition: transform 0.3s var(--ease-entrada);
 }
 
 .drawer__chevron path {
@@ -618,7 +618,7 @@ body {
 .drawer__submenu {
   display: grid;
   grid-template-rows: 0fr;
-  transition: grid-template-rows 0.3s cubic-bezier(0.55, 0, 1, 0.3);  /* ease-in collapse */
+  transition: grid-template-rows 0.3s var(--ease-saida);  /* ease-in collapse */
 }
 
 .drawer__submenu-inner {
@@ -628,7 +628,7 @@ body {
 
 .drawer__item--expanded .drawer__submenu {
   grid-template-rows: 1fr;
-  transition: grid-template-rows 0.35s cubic-bezier(0, 0.2, 0.35, 1);  /* ease-out expand */
+  transition: grid-template-rows 0.35s var(--ease-entrada);  /* ease-out expand */
 }
 
 .drawer__sublink {
@@ -773,7 +773,7 @@ body {
 /* ---------- ROTATOR DO TÍTULO (palavra que muda) ----------
    Cada caractere vira <span class="hero__title-char">. Cascata via --char-i (set no JS).
    Padrão de animação: COLAPSAR (mesmo do menu desktop) — max-width + opacity.
-   Easing também igual: ease-out na expansão, ease-in no colapso. */
+   Easing: --ease-entrada na expansão, --ease-saida no colapso. */
 .hero__title-rotator {
   display: inline-block;
   white-space: nowrap;                 /* não quebra entre chars (que são inline-block) */
@@ -793,7 +793,7 @@ body {
 .hero__title-char:not(.is-leaving) {
   animation-name: hero-char-expand-width, hero-char-fade-in;
   animation-duration: 400ms, 300ms;
-  animation-timing-function: cubic-bezier(0, 0.2, 0.35, 1), ease-out;
+  animation-timing-function: var(--ease-entrada), ease-out;
   animation-fill-mode: backwards, backwards;
   /* max-width cresce de cara; opacity começa 100ms depois e termina junto (em 400ms total) */
   animation-delay:
@@ -804,7 +804,7 @@ body {
 .hero__title-char.is-leaving {
   animation-name: hero-char-collapse-width, hero-char-fade-out;
   animation-duration: 400ms, 120ms;
-  animation-timing-function: cubic-bezier(0.55, 0, 1, 0.3), linear;
+  animation-timing-function: var(--ease-saida), linear;
   animation-fill-mode: forwards, forwards;
   /* Cascata REVERSA (do último char pro primeiro) — acompanha o colapso visual,
      que comprime a palavra pra esquerda. Char da direita some primeiro.
