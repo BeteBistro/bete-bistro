@@ -259,15 +259,42 @@
   /* ============================================================
      4. HERO — ROTATOR DO TÍTULO ("Artesanal" → "Caseira" → "De mãe" ...)
 
-     Cada palavra dura 3s. Caracteres entram/saem em cascata (40ms entre cada).
+     Sincronizado com o looping do vídeo: tempo total das 5 palavras = duração do vídeo.
+     Cada palavra ocupa videoDuration/5 ms (display + animações). O displayTime de cada
+     palavra é o que sobra depois de descontar suas animações — palavras maiores ficam
+     menos tempo estáticas (porque gastaram mais tempo na cascata).
      ============================================================ */
-  var rotatorEl = document.querySelector('.hero__title-rotator');
-  var palavras = ['Artesanal', 'Caseira', 'De mãe', 'De vó', 'Afetiva', 'Saborosa'];
-  var rotatorIdx = 0;
-  var displayTime = 1000;             // ms que cada palavra fica estática
+  var rotatorEl   = document.querySelector('.hero__title-rotator');
+  var heroVideoEl = document.querySelector('.hero__video');
+  var palavras    = ['Artesanal', 'Caseira', 'De mãe', 'De vó', 'Saborosa'];
+  var rotatorIdx  = 0;
   var charDelay   = 30;               // ms entre cascata de cada char
   var animOutMs   = 400;              // duração da animação de saída por char
-  var animInMs    = 400;              // duração da animação de entrada por char (mesma — simétrica)
+  var animInMs    = 400;              // duração da animação de entrada por char
+
+  // Fallback caso o vídeo não carregue metadata: 1s display por palavra
+  var displayTimes = palavras.map(function () { return 1000; });
+
+  function calcDisplayTimes(videoDurationMs) {
+    var timePerWord = videoDurationMs / palavras.length;
+    return palavras.map(function (word) {
+      var n = word.length;
+      var animTime = animInMs + animOutMs + (n - 1) * charDelay * 2;
+      return Math.max(300, timePerWord - animTime); // min 300ms pra dar pra ler
+    });
+  }
+
+  function maybeUpdateDisplayTimes() {
+    if (!heroVideoEl) return;
+    var dur = heroVideoEl.duration;
+    if (!dur || isNaN(dur) || !isFinite(dur) || dur === 0) return;
+    displayTimes = calcDisplayTimes(dur * 1000);
+  }
+
+  if (heroVideoEl) {
+    if (heroVideoEl.readyState >= 1) maybeUpdateDisplayTimes();
+    heroVideoEl.addEventListener('loadedmetadata', maybeUpdateDisplayTimes);
+  }
 
   function splitWordToChars(word) {
     if (!rotatorEl) return;
@@ -300,16 +327,35 @@
     window.setTimeout(function () {
       rotatorIdx = (rotatorIdx + 1) % palavras.length;
       splitWordToChars(palavras[rotatorIdx]);
-      // Próximo tick depois de display + cascata de entrada
-      var nextDelay = displayTime + animInMs + ((palavras[rotatorIdx].length - 1) * charDelay);
+      // Próximo tick depois de display (variável por palavra) + cascata de entrada
+      var nextDelay = displayTimes[rotatorIdx] + animInMs + ((palavras[rotatorIdx].length - 1) * charDelay);
       window.setTimeout(rotatorTick, nextDelay);
     }, totalOut);
   }
 
-  if (rotatorEl && !prefersReducedMotion) {
+  // Inicia o rotator junto com o vídeo (ou imediatamente se vídeo já está tocando)
+  var rotatorStarted = false;
+  function startRotator() {
+    if (rotatorStarted || !rotatorEl || prefersReducedMotion) return;
+    rotatorStarted = true;
     splitWordToChars(palavras[0]);
-    var firstDelay = displayTime + animInMs + ((palavras[0].length - 1) * charDelay);
+    var firstDelay = displayTimes[0] + animInMs + ((palavras[0].length - 1) * charDelay);
     window.setTimeout(rotatorTick, firstDelay);
+  }
+
+  if (rotatorEl && !prefersReducedMotion) {
+    if (heroVideoEl) {
+      if (!heroVideoEl.paused && heroVideoEl.currentTime > 0) {
+        // Vídeo já está tocando: sincroniza agora
+        startRotator();
+      } else {
+        heroVideoEl.addEventListener('playing', startRotator, { once: true });
+      }
+      // Fallback: se autoplay não disparar em 800ms, inicia mesmo assim
+      setTimeout(startRotator, 800);
+    } else {
+      startRotator();
+    }
   }
 
 })();
