@@ -709,11 +709,23 @@ body {
   align-items: stretch;
   text-align: center;
 
-  /* Respiro top: depois do logo. Fluido 32 → 56.
-     Respiro bottom: 40 → 64 + altura aproximada da ondinha (14 → 32),
-     pra que o respiro VISUAL acima da ondinha bata com o do topo. */
-  padding-top: calc(var(--logo-size) + clamp(32px, 25px + 2.14vw, 56px));
-  padding-bottom: calc(clamp(40px, 33px + 2.14vw, 64px) + clamp(14px, 9px + 1.61vw, 32px));
+  /* Respiro top — curva quebrada (Figma): 40 (360) → 48 (1024) → 16 (1440).
+     min() de 2 clamps faz a transição na intersecção (1024). */
+  padding-top: calc(var(--logo-size) + min(
+    clamp(40px, 35.66px + 1.205vw, 48px),
+    clamp(16px, 126.74px - 7.69vw, 48px)
+  ));
+
+  /* Respiro bottom VISUAL (Figma): 72 (360) → 100 (1024) → 80 (1440).
+     + altura aproximada da ondinha (não conta no Figma, é "divisor"). */
+  padding-bottom: calc(
+    min(
+      clamp(72px, 56.82px + 4.217vw, 100px),
+      clamp(80px, 149.23px - 4.808vw, 100px)
+    )
+    + clamp(14px, 9px + 1.61vw, 32px)
+  );
+
   padding-left: var(--header-padding);
   padding-right: var(--header-padding);
 }
@@ -728,8 +740,8 @@ body {
   line-height: 1.03;
   color: var(--color-marfim-500);
   text-transform: uppercase;
-  /* Gap mobile título→vídeo fluido: 8 → 12 (320 → 768) */
-  margin: 0 0 clamp(8px, 5.14px + 0.89vw, 12px) 0;
+  /* Gap mobile título→vídeo (Figma): 16px */
+  margin: 0 0 16px 0;
 }
 
 .hero__video-shape {
@@ -737,8 +749,8 @@ body {
   z-index: 1;
   aspect-ratio: 737 / 460;
   width: 100%;
-  /* Gap mobile vídeo→botão fluido: 32 → 48 (320 → 768) */
-  margin: 0 0 clamp(32px, 20.58px + 3.57vw, 48px) 0;
+  /* Gap mobile vídeo→botão (Figma): 48px */
+  margin: 0 0 48px 0;
 }
 
 .hero__video {
