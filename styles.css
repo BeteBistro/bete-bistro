@@ -322,8 +322,8 @@ body {
   transform: translateY(-8px) scale(0.96);
   transform-origin: top left;
   transition:
-    opacity 0.12s var(--ease-saida) 0.13s,           /* desce só no fim do unhover */
-    transform 0.25s var(--ease-saida),
+    opacity 0.12s ease-in 0.13s,
+    transform 0.25s ease-in,
     visibility 0s linear 0.25s;
   z-index: 90;
 }
@@ -334,8 +334,8 @@ body {
   visibility: visible;
   transform: translateY(0) scale(1);
   transition:
-    opacity 0.15s var(--ease-entrada),               /* sobe rápido no começo */
-    transform 0.25s var(--ease-entrada),
+    opacity 0.15s ease-out,
+    transform 0.25s ease-out,
     visibility 0s;
 }
 
@@ -782,13 +782,15 @@ body {
   white-space: nowrap;
 }
 
-/* Fade in/out no container (não por char). Flat = linear, exceção à regra de pico. */
+/* Fade in/out no container (não por char). Flat = linear, exceção à regra de pico.
+   Duração e delay são calculados no JS baseado no comprimento da palavra,
+   setados como --fade-duration e --fade-delay. */
 .hero__title-rotator.is-entering {
-  animation: rotator-fade-in 120ms linear both;
+  animation: rotator-fade-in var(--fade-duration, 120ms) linear both;
 }
 
 .hero__title-rotator.is-exiting {
-  animation: rotator-fade-out 120ms linear forwards;
+  animation: rotator-fade-out var(--fade-duration, 120ms) linear var(--fade-delay, 0ms) forwards;
 }
 
 @keyframes rotator-fade-in {

@@ -348,14 +348,17 @@
     }
 
     // Mede offsetLeft de cada char pra calcular o translateX de empilhamento.
-    // Leitura de offsetLeft força reflow — garante layout correto.
     var refX = spans[0] ? spans[0].offsetLeft : 0;
     for (var j = 0; j < spans.length; j++) {
       var dx = spans[j].offsetLeft - refX;
       spans[j].style.setProperty('--char-stack-x', (-dx) + 'px');
     }
 
-    // Fade in no container (opacity flat/linear, exceção à regra de pico)
+    // Fade in: chega em 100% quando falta 15% pro desempilhamento terminar.
+    // Duração = 85% do tempo total de entrada.
+    var totalIn = animInMs + ((chars.length - 1) * charDelay);
+    rotatorEl.style.setProperty('--fade-duration', Math.round(totalIn * 0.85) + 'ms');
+    rotatorEl.style.removeProperty('--fade-delay');
     rotatorEl.classList.add('is-entering');
   }
 
@@ -374,11 +377,13 @@
     // Tempo total de saída = duração + cascata do último char
     var totalOut = animOutMs + ((chars.length - 1) * charDelay);
 
-    // Fade out no container perto do fim da saída
-    var fadeOutDelay = Math.max(0, totalOut - 120);
-    window.setTimeout(function () {
-      rotatorEl.classList.add('is-exiting');
-    }, fadeOutDelay);
+    // Fade out: começa 15% depois do início do empilhamento,
+    // termina quando a última letra se empilha.
+    var fadeDelay = Math.round(totalOut * 0.15);
+    var fadeDuration = totalOut - fadeDelay;
+    rotatorEl.style.setProperty('--fade-delay', fadeDelay + 'ms');
+    rotatorEl.style.setProperty('--fade-duration', fadeDuration + 'ms');
+    rotatorEl.classList.add('is-exiting');
 
     // Troca a palavra quando a saída termina
     window.setTimeout(function () {
