@@ -84,6 +84,15 @@
 
 </header>
 
+<!-- Síncrono: remove o estado collapsed default em desktop top, antes do primeiro paint.
+     Em mobile/tablet/scrolled, mantém o estado collapsed (que é o default no HTML). -->
+<script>
+  if (window.innerWidth > 1200 && window.scrollY <= 100) {
+    document.getElementById('header').classList.remove('is-collapsed');
+    document.getElementById('menuBtn').classList.remove('is-visible');
+  }
+</script>
+
 
 <!-- ============================================================
      DRAWER (gaveta do menu)

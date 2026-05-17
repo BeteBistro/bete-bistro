@@ -92,32 +92,9 @@
 
   window.addEventListener('scroll', updateHeader, { passive: true });
   window.addEventListener('resize', updateHeader);
-
-  /* Init sem animação: HTML começa com is-collapsed. Se a viewport atual é
-     desktop topo, removemos a classe + escondemos o btn instantaneamente
-     (no-anim desliga transitions/animations temporariamente). */
-  (function initHeader() {
-    var initScrolled = window.scrollY > collapseThreshold;
-    var initNarrow   = window.innerWidth <= 1200;
-    var initShouldCollapse = initNarrow || initScrolled;
-
-    if (!initShouldCollapse) {
-      // Desktop top: reverte pro estado expanded sem animação
-      header.classList.add('no-anim');
-      menuBtn.classList.add('no-anim');
-      header.classList.remove('is-collapsed');
-      menuBtn.classList.remove('is-visible');
-      isCollapsed = false;
-      // Re-habilita transitions no próximo frame (depois do paint)
-      requestAnimationFrame(function () {
-        requestAnimationFrame(function () {
-          header.classList.remove('no-anim');
-          menuBtn.classList.remove('no-anim');
-        });
-      });
-    }
-    // Em mobile / scrolled: já está no estado certo, nada a fazer
-  })();
+  /* Estado inicial: o inline script no HTML (logo após o </header>) já removeu
+     is-collapsed em desktop top antes do primeiro paint. isCollapsed (declarado acima)
+     foi lido do classList atual, então reflete o estado correto. */
 
 
   /* ============================================================
