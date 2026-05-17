@@ -501,6 +501,7 @@ body {
   background: var(--color-marfim-500);
   border-radius: var(--drawer-radius);
   padding: var(--scale-400) 0;  /* 16px vertical (era 12px) */
+  filter: drop-shadow(0 0 16px rgba(56, 18, 0, 0.20));   /* laranja-950 @ 20% — igual ao logo/btn */
   opacity: 0;
   visibility: hidden;
   transform: scale(0);
@@ -677,6 +678,7 @@ body {
     max-width: none;
     max-height: calc(100vh - ((var(--logo-size) - var(--icon-size)) / 2 + var(--icon-size) + var(--drawer-gap)) - var(--header-padding));
     padding: var(--scale-400) 0;
+    filter: none;                        /* sem sombra no mobile */
   }
 }
 
@@ -768,23 +770,23 @@ body {
 .hero__title-char:not(.is-leaving) {
   animation-name: hero-char-expand-width, hero-char-fade-in;
   animation-duration: 400ms, 300ms;
-  animation-timing-function: cubic-bezier(0, 0.2, 0.35, 1), ease;
+  animation-timing-function: cubic-bezier(0, 0.2, 0.35, 1), ease-out;
   animation-fill-mode: backwards, backwards;
-  /* max-width começa logo; opacity vem 80ms depois pra char "abrir" antes de aparecer */
+  /* max-width cresce de cara; opacity começa 100ms depois e termina junto (em 400ms total) */
   animation-delay:
     calc(var(--char-i, 0) * 30ms),
-    calc(var(--char-i, 0) * 30ms + 80ms);
+    calc(var(--char-i, 0) * 30ms + 100ms);
 }
 
 .hero__title-char.is-leaving {
   animation-name: hero-char-collapse-width, hero-char-fade-out;
   animation-duration: 400ms, 300ms;
-  animation-timing-function: cubic-bezier(0.55, 0, 1, 0.3), ease;
+  animation-timing-function: cubic-bezier(0.55, 0, 1, 0.3), ease-in;
   animation-fill-mode: forwards, forwards;
-  /* max-width começa colapsando logo; opacity cai 80ms depois */
+  /* max-width colapsa de cara; opacity segura em 1 por 100ms, depois cai até 0 junto com o colapso */
   animation-delay:
     calc(var(--char-i, 0) * 30ms),
-    calc(var(--char-i, 0) * 30ms + 80ms);
+    calc(var(--char-i, 0) * 30ms + 100ms);
 }
 
 @keyframes hero-char-expand-width {
