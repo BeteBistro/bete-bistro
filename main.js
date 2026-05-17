@@ -174,4 +174,55 @@
     })(parentRows[j]);
   }
 
+
+  /* ============================================================
+     3. HERO — PARALLAX (vídeo e ondinha)
+
+     Vídeo: sobe mais devagar que o scroll (translateY positivo).
+     Ondinha: vai pra direita ao scrollar pra baixo (translateX positivo).
+
+     Fator 0.3 = a cada 100px scrollados, elemento move 30px.
+     Respeita prefers-reduced-motion.
+     ============================================================ */
+  var prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  if (!prefersReducedMotion) {
+    var heroVideo   = document.querySelector('.hero__video-shape');
+    var heroOndinha = document.querySelector('.hero__ondinha img');
+    var hero        = document.getElementById('hero');
+
+    if (hero && (heroVideo || heroOndinha)) {
+      var lastScrollY = window.scrollY;
+      var ticking     = false;
+      var factor      = 0.3;
+
+      function updateParallax() {
+        // Limita ao tamanho do hero pra não desperdiçar cálculo quando hero saiu da viewport
+        var heroHeight = hero.offsetHeight;
+        var sy = Math.min(lastScrollY, heroHeight);
+        var offset = sy * factor;
+
+        if (heroVideo) {
+          heroVideo.style.transform = 'translate3d(0, ' + offset + 'px, 0)';
+        }
+        if (heroOndinha) {
+          heroOndinha.style.transform = 'translate3d(' + offset + 'px, 0, 0)';
+        }
+
+        ticking = false;
+      }
+
+      function onScroll() {
+        lastScrollY = window.scrollY;
+        if (!ticking) {
+          window.requestAnimationFrame(updateParallax);
+          ticking = true;
+        }
+      }
+
+      window.addEventListener('scroll', onScroll, { passive: true });
+      updateParallax(); // estado inicial (caso a página carregue já scrollada)
+    }
+  }
+
 })();

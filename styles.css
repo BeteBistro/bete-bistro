@@ -751,6 +751,7 @@ body {
   width: 100%;
   /* Gap mobile vídeo→botão (Figma): 48px */
   margin: 0 0 48px 0;
+  will-change: transform;              /* parallax — hint pro browser usar GPU */
 }
 
 .hero__video {
@@ -776,11 +777,14 @@ body {
   line-height: 0;
   pointer-events: none;
   z-index: 3;                          /* à frente de tudo no hero */
+  overflow: hidden;                    /* recorta a img que vai oscilar lateralmente */
 }
 
 .hero__ondinha img {
-  width: 100%;
+  width: 140%;                         /* 20% extra de cada lado pro parallax */
+  margin-left: -20%;                   /* centraliza */
   display: block;
+  will-change: transform;
 }
 
 /* ---------- DESKTOP (≥ 769px) ----------
