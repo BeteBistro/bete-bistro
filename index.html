@@ -161,23 +161,48 @@
 
 
 <!-- ============================================================
-     HERO (placeholder — conteúdo real vem depois)
+     HERO
      ============================================================ -->
 <section class="hero" id="hero">
-  <p class="hero__placeholder">[ Hero — conteúdo será construído na próxima etapa ]</p>
 
-  <div class="hero__ondinha">
+  <h1 class="hero__title">Comida<br>Artesanal</h1>
+
+  <div class="hero__video-shape">
+    <video
+      class="hero__video"
+      autoplay
+      muted
+      loop
+      playsinline
+      preload="auto"
+      poster="assets/img/hero-fallback.png"
+      aria-hidden="true">
+      <source src="assets/video/hero.webm" type="video/webm">
+      <source src="assets/video/hero.mp4" type="video/mp4">
+    </video>
+  </div>
+
+  <a href="#fazer-pedido" class="btn-primary hero__cta">Fazer pedido</a>
+
+  <div class="hero__ondinha" aria-hidden="true">
     <picture>
       <source srcset="assets/svg/ondinha-mobile.svg" media="(max-width: 480px)">
       <source srcset="assets/svg/ondinha-tablet.svg" media="(max-width: 1024px)">
-      <img src="assets/svg/ondinha-desktop.svg" alt="" role="presentation">
+      <img src="assets/svg/ondinha-desktop.svg" alt="">
     </picture>
   </div>
+
 </section>
 
-<section class="placeholder-section">
-  [ Próxima seção ]
-</section>
+
+<!-- SVG escondido com o clip-path do shape do hero (referenciado pelo CSS) -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <clipPath id="hero-shape" clipPathUnits="objectBoundingBox">
+      <path d="M0.994 0.289 C1.036 0.540, 0.849 0.837, 0.576 0.953 C0.303 1.070, 0.048 0.961, 0.006 0.711 C-0.036 0.460, 0.151 0.163, 0.424 0.047 C0.696 -0.070, 0.952 0.039, 0.994 0.289 Z" />
+    </clipPath>
+  </defs>
+</svg>
 
 <script src="main.js"></script>
 </body>
