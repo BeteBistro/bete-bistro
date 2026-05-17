@@ -177,6 +177,27 @@
   --grid-colunas: 12;
   --grid-margem:  var(--scale-2000);  /* 80px */
   --grid-gutter:  var(--scale-600);   /* 24px */
+
+
+  /* ----------------------------------------------------------
+     ANIMAÇÃO — Easings
+     Pico de velocidade assimétrico (estilo AE):
+     entrada → pico em ~65% da duração
+     saída   → pico em ~35% da duração (espelho)
+     Ambos começam e terminam em velocidade zero.
+     ---------------------------------------------------------- */
+
+  /* Par principal — usar em scroll reveals, lettering, parallax,
+     carrosséis, aparições/desaparições de elementos */
+  --ease-entrada:  cubic-bezier(0.82, 0, 0.42, 1);
+  --ease-saida:    cubic-bezier(0.58, 0, 0.18, 1);
+
+  /* Hover / interações instantâneas — sem pico, resposta direta */
+  --ease-hover:    ease;
+
+  /* Colapsar (menu, chars) — par legado, manter por compatibilidade */
+  --ease-collapse: cubic-bezier(0.55, 0, 1, 0.3);
+  --ease-expand:   cubic-bezier(0, 0.2, 0.35, 1);
 }
 
 
