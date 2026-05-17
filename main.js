@@ -332,25 +332,41 @@
 
   function splitWordToChars(word) {
     if (!rotatorEl) return;
+    rotatorEl.className = 'hero__title-rotator';   // reset classes
     rotatorEl.innerHTML = '';
     var chars = word.split('');
-    // --char-count fica no rotator e é herdado pelos chars filhos (pra CSS calcular cascata reversa)
     rotatorEl.style.setProperty('--char-count', chars.length);
+
+    var spans = [];
     for (var i = 0; i < chars.length; i++) {
       var span = document.createElement('span');
       span.className = 'hero__title-char';
       span.style.setProperty('--char-i', i);
-      // Preserva espaço com nbsp pra não colapsar
       span.textContent = chars[i] === ' ' ? '\u00A0' : chars[i];
       rotatorEl.appendChild(span);
+      spans.push(span);
     }
+
+    // Mede offsetLeft de cada char pra calcular o translateX de empilhamento.
+    // Leitura de offsetLeft força reflow — garante layout correto.
+    var refX = spans[0] ? spans[0].offsetLeft : 0;
+    for (var j = 0; j < spans.length; j++) {
+      var dx = spans[j].offsetLeft - refX;
+      spans[j].style.setProperty('--char-stack-x', (-dx) + 'px');
+    }
+
+    // Fade in no container (opacity flat/linear, exceção à regra de pico)
+    rotatorEl.classList.add('is-entering');
   }
 
   function rotatorTick() {
     if (!rotatorEl) return;
     var chars = rotatorEl.querySelectorAll('.hero__title-char');
 
-    // Aplica saída (cascata via --char-i no CSS)
+    // Remove o fade-in que já terminou
+    rotatorEl.classList.remove('is-entering');
+
+    // Aplica saída (empilhamento — cascata via --char-i no CSS)
     for (var i = 0; i < chars.length; i++) {
       chars[i].classList.add('is-leaving');
     }
@@ -358,6 +374,13 @@
     // Tempo total de saída = duração + cascata do último char
     var totalOut = animOutMs + ((chars.length - 1) * charDelay);
 
+    // Fade out no container perto do fim da saída
+    var fadeOutDelay = Math.max(0, totalOut - 120);
+    window.setTimeout(function () {
+      rotatorEl.classList.add('is-exiting');
+    }, fadeOutDelay);
+
+    // Troca a palavra quando a saída termina
     window.setTimeout(function () {
       rotatorIdx = (rotatorIdx + 1) % palavras.length;
       splitWordToChars(palavras[rotatorIdx]);

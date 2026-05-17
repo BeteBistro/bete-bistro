@@ -11,8 +11,8 @@ Definidas como tokens em `tokens.css`.
 
 | Token | Valor | Pico | Uso |
 |---|---|---|---|
-| `--ease-entrada` | `cubic-bezier(0.93, 0, 0.55, 1)` | ~67% da duração | Elementos aparecendo |
-| `--ease-saida` | `cubic-bezier(0.45, 0, 0.07, 1)` | ~33% da duração | Elementos saindo |
+| `--ease-entrada` | `cubic-bezier(0.88, 0, 0.48, 1)` | ~66% da duração | Elementos aparecendo |
+| `--ease-saida` | `cubic-bezier(0.52, 0, 0.12, 1)` | ~34% da duração | Elementos saindo |
 
 Regras:
 - Pico de velocidade NUNCA é flat (platô). Sempre tem um pico pronunciado.
@@ -52,45 +52,50 @@ Bounce já reproduz pico de velocidade via escala (overshoot/pull-back). Não pr
   - Texto sobre fundo laranja-500 → hover `--color-laranja-300`
 
 
-## 3. Padrão "rotator" (cascata por caractere)
+## 3. Padrão "empilhamento" (rotator do título)
 
-Usado em: rotator do hero. Pode ser reaproveitado em outros textos animados.
+Efeito de empilhamento horizontal: letras empilhadas em x=0, se desempilham arrastando pra direita.
 
-Cada caractere vira `<span>` com `--char-i` (índice) e `--char-count` (total) via JS.
+Cada caractere vira `<span>` com `--char-i` (índice), `--char-count` (total) e `--char-stack-x` (offset medido via JS `offsetLeft`) definidos no JS.
 
 ### Princípio: sem máscara
 
-NÃO usar `max-width` + `overflow: hidden` (cria efeito de janela/máscara cortando as letras). Em vez disso, cada letra aparece/some por conta própria via `opacity` + `transform`.
+NÃO usar `max-width` + `overflow: hidden` (cria efeito de janela cortando as letras). NÃO usar `translateY` (não é o efeito desejado). Cada letra se move horizontalmente de/para a posição empilhada via `translateX(var(--char-stack-x))`.
 
-### Entrada (letras sobem e aparecem)
+### Cascata
+
+Ambos entrada e saída: última letra primeiro (delay 0), primeira letra por último. A última tem mais distância, lidera o movimento.
+
 ```css
-animation: hero-char-enter 400ms var(--ease-entrada) backwards;
-animation-delay: calc(var(--char-i) * 30ms);  /* cascata esq → dir */
+animation-delay: calc((var(--char-count) - 1 - var(--char-i)) * 30ms);
 ```
+
+### Entrada (desempilha)
 ```css
-@keyframes hero-char-enter {
-  from { opacity: 0; transform: translateY(0.35em); }
-  to   { opacity: 1; transform: translateY(0); }
+@keyframes hero-char-unstack {
+  from { transform: translateX(var(--char-stack-x)); }
+  to   { transform: translateX(0); }
 }
 ```
+Duração: 400ms. Easing: `--ease-entrada`.
 
-### Saída (letras sobem e somem)
+### Saída (empilha)
 ```css
-animation: hero-char-leave 350ms var(--ease-saida) forwards;
-animation-delay: calc((var(--char-count) - 1 - var(--char-i)) * 30ms);  /* cascata REVERSA */
-```
-```css
-@keyframes hero-char-leave {
-  from { opacity: 1; transform: translateY(0); }
-  to   { opacity: 0; transform: translateY(-0.35em); }
+@keyframes hero-char-stack {
+  from { transform: translateX(0); }
+  to   { transform: translateX(var(--char-stack-x)); }
 }
 ```
+Duração: 350ms. Easing: `--ease-saida`.
 
-Regras:
-- Stagger: 30ms entre cada char.
-- Entrada: cascata normal (esquerda → direita, primeira letra primeiro).
-- Saída: cascata REVERSA (direita → esquerda, última letra primeiro).
-- Uma única animation por estado (opacity + transform juntos). Sem separar em 2 animations com delays diferentes.
+### Opacidade (exceção: flat/linear)
+
+Opacidade é no CONTAINER (`.hero__title-rotator`), não por caractere. Usa curva flat (`linear`), exceção à regra de pico.
+
+- **Entrada**: `opacity 0→1`, 120ms linear, sem delay. Letras ficam visíveis assim que começam a se arrastar.
+- **Saída**: `opacity 1→0`, 120ms linear, delay = totalSaída - 120ms. Letras somem quando a última termina de empilhar.
+
+Classes: `.is-entering` (fade in) e `.is-exiting` (fade out), controladas via JS.
 
 
 ## 4. Animações por tipo de trigger

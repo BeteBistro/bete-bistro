@@ -189,8 +189,8 @@
 
   /* Par principal — usar em scroll reveals, lettering, parallax,
      carrosséis, aparições/desaparições de elementos */
-  --ease-entrada:  cubic-bezier(0.93, 0, 0.55, 1);
-  --ease-saida:    cubic-bezier(0.45, 0, 0.07, 1);
+  --ease-entrada:  cubic-bezier(0.88, 0, 0.48, 1);
+  --ease-saida:    cubic-bezier(0.52, 0, 0.12, 1);
 
   /* Hover / interações instantâneas — sem pico, resposta direta */
   --ease-hover:    ease;

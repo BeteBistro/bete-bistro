@@ -771,12 +771,34 @@ body {
 }
 
 /* ---------- ROTATOR DO TÍTULO (palavra que muda) ----------
-   Cada caractere vira <span class="hero__title-char">. Cascata via --char-i (set no JS).
-   Animação: opacity + translateY por caractere (NÃO max-width — evita efeito de máscara).
-   Entrada: letras sobem pro lugar. Saída: letras sobem e somem. */
+   Efeito de EMPILHAMENTO horizontal:
+   - Entrada: todas as letras empilhadas em x=0, se desempilham da última pra primeira,
+     arrastando pra direita até suas posições naturais. Opacity flat (0→1 no container).
+   - Saída: letras se empilham de volta, da última pra primeira.
+     Opacity flat (1→0 no container, no fim).
+   --char-stack-x é calculado no JS via offsetLeft de cada char. */
 .hero__title-rotator {
   display: inline-block;
   white-space: nowrap;
+}
+
+/* Fade in/out no container (não por char). Flat = linear, exceção à regra de pico. */
+.hero__title-rotator.is-entering {
+  animation: rotator-fade-in 120ms linear both;
+}
+
+.hero__title-rotator.is-exiting {
+  animation: rotator-fade-out 120ms linear forwards;
+}
+
+@keyframes rotator-fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes rotator-fade-out {
+  from { opacity: 1; }
+  to   { opacity: 0; }
 }
 
 .hero__title-char {
@@ -785,44 +807,39 @@ body {
   vertical-align: baseline;
 }
 
-/* --- Entrada: cada char sobe e aparece (cascata esq → dir) --- */
+/* --- Entrada: desempilha da última pra primeira (última = delay 0) --- */
 .hero__title-char:not(.is-leaving) {
-  animation: hero-char-enter 400ms var(--ease-entrada) backwards;
-  animation-delay: calc(var(--char-i, 0) * 30ms);
-}
-
-/* --- Saída: cada char sobe e some (cascata REVERSA dir → esq) --- */
-.hero__title-char.is-leaving {
-  animation: hero-char-leave 350ms var(--ease-saida) forwards;
+  animation: hero-char-unstack 400ms var(--ease-entrada) backwards;
   animation-delay: calc((var(--char-count, 1) - 1 - var(--char-i, 0)) * 30ms);
 }
 
-@keyframes hero-char-enter {
-  from {
-    opacity: 0;
-    transform: translateY(0.35em);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+/* --- Saída: empilha da última pra primeira (mesma ordem) --- */
+.hero__title-char.is-leaving {
+  animation: hero-char-stack 350ms var(--ease-saida) forwards;
+  animation-delay: calc((var(--char-count, 1) - 1 - var(--char-i, 0)) * 30ms);
 }
 
-@keyframes hero-char-leave {
-  from {
-    opacity: 1;
-    transform: translateY(0);
-  }
-  to {
-    opacity: 0;
-    transform: translateY(-0.35em);
-  }
+@keyframes hero-char-unstack {
+  from { transform: translateX(var(--char-stack-x, 0px)); }
+  to   { transform: translateX(0); }
+}
+
+@keyframes hero-char-stack {
+  from { transform: translateX(0); }
+  to   { transform: translateX(var(--char-stack-x, 0px)); }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .hero__title-char,
   .hero__title-char.is-leaving {
     animation: none;
+  }
+  .hero__title-rotator.is-entering,
+  .hero__title-rotator.is-exiting {
+    animation: none;
+    opacity: 1;
+  }
+}
   }
 }
 
