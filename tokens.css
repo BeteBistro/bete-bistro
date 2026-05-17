@@ -1,0 +1,206 @@
+/* ============================================================
+   Bete Bistrô — Design Tokens
+   Fonte da verdade: exportado do Figma (Marca + Alias + Responsivo)
+   ============================================================ */
+
+:root {
+  /* ----------------------------------------------------------
+     CORES PRIMITIVAS
+     ---------------------------------------------------------- */
+
+  /* Marfim */
+  --color-marfim-50:  #FEFCF9;
+  --color-marfim-100: #FEF8F3;
+  --color-marfim-200: #FCF2E9;
+  --color-marfim-300: #FDEEE0;
+  --color-marfim-400: #FBE8D5;
+  --color-marfim-500: #FCE4CC;
+
+  /* Cinza */
+  --color-cinza-50:  #F1EDE7;
+  --color-cinza-100: #E3DCCE;
+  --color-cinza-200: #C0B8A9;
+  --color-cinza-300: #9E988B;
+  --color-cinza-400: #7C766C;
+  --color-cinza-500: #5D5951;
+  --color-cinza-600: #4A4640;
+  --color-cinza-700: #393731;
+  --color-cinza-800: #282622;
+  --color-cinza-900: #191714;
+  --color-cinza-950: #0F0E0B;
+
+  /* Laranja */
+  --color-laranja-50:  #FFEDE7;
+  --color-laranja-100: #FFDBCE;
+  --color-laranja-200: #FFB99F;
+  --color-laranja-300: #FF946D;
+  --color-laranja-400: #FF7342;
+  --color-laranja-500: #E95A2A;
+  --color-laranja-600: #CC4211;
+  --color-laranja-700: #A92900;
+  --color-laranja-800: #7F1E00;
+  --color-laranja-900: #551700;
+  --color-laranja-950: #381200;
+
+  /* Verde */
+  --color-verde-50:  #E6F0EA;
+  --color-verde-100: #C7E0D1;
+  --color-verde-200: #98CDAF;
+  --color-verde-300: #66B98E;
+  --color-verde-400: #3DA272;
+  --color-verde-500: #20895B;
+  --color-verde-600: #00754A;
+  --color-verde-700: #005C39;
+  --color-verde-800: #004529;
+  --color-verde-900: #002F1A;
+  --color-verde-950: #002110;
+
+  /* Ocre */
+  --color-ocre-50:  #FFF1E6;
+  --color-ocre-100: #FFE3CC;
+  --color-ocre-200: #FFCEA1;
+  --color-ocre-300: #FFB871;
+  --color-ocre-400: #FFA849;
+  --color-ocre-500: #F69A2C;
+  --color-ocre-600: #D27C00;
+  --color-ocre-700: #A76100;
+  --color-ocre-800: #7B4500;
+  --color-ocre-900: #502C00;
+  --color-ocre-950: #341C00;
+
+  /* Azul */
+  --color-azul-50:  #EEF0FF;
+  --color-azul-100: #D9DEFE;
+  --color-azul-200: #B8C4FF;
+  --color-azul-300: #92AAFF;
+  --color-azul-400: #598CFD;
+  --color-azul-500: #2B6FDB;
+  --color-azul-600: #005BBF;
+  --color-azul-700: #00499B;
+  --color-azul-800: #003575;
+  --color-azul-900: #002251;
+  --color-azul-950: #00163B;
+
+  /* Marrom */
+  --color-marrom-50:  #FCF2EB;
+  --color-marrom-100: #F6E1D5;
+  --color-marrom-200: #E8C5AF;
+  --color-marrom-300: #D9A686;
+  --color-marrom-400: #C28259;
+  --color-marrom-500: #9C5C2D;
+  --color-marrom-600: #874A1F;
+  --color-marrom-700: #6D3913;
+  --color-marrom-800: #522A0E;
+  --color-marrom-900: #391D06;
+  --color-marrom-950: #271300;
+
+  /* Monocromático */
+  --color-preto:  #000000;
+  --color-branco: #FFFFFF;
+
+  /* Cores de Suporte */
+  --color-info-subtle:     #DAF1FE;
+  --color-info-default:    #3AB8E6;
+  --color-info-strong:     #005A75;
+
+  --color-alerta-subtle:   #FFEBD1;
+  --color-alerta-default:  #F0B441;
+  --color-alerta-strong:   #775300;
+
+  --color-erro-subtle:     #FFE9E7;
+  --color-erro-default:    #F76365;
+  --color-erro-strong:     #A60927;
+
+  --color-sucesso-subtle:  #E1F3DF;
+  --color-sucesso-default: #85BE85;
+  --color-sucesso-strong:  #005818;
+
+
+  /* ----------------------------------------------------------
+     TIPOGRAFIA
+     ---------------------------------------------------------- */
+
+  --font-titulo:    'GimmeWeb', sans-serif;
+  --font-subtitulo: 'RenosWeb', sans-serif;
+  --font-body:      'RadioCanadaWeb', sans-serif;
+
+  --font-kerning-body: -0.01em;
+
+
+  /* ----------------------------------------------------------
+     ESCALA NUMÉRICA
+     ---------------------------------------------------------- */
+
+  --scale-0:    0px;
+  --scale-25:   1px;
+  --scale-50:   2px;
+  --scale-100:  4px;
+  --scale-200:  8px;
+  --scale-300:  12px;
+  --scale-400:  16px;
+  --scale-500:  20px;
+  --scale-600:  24px;
+  --scale-700:  28px;
+  --scale-800:  32px;
+  --scale-900:  36px;
+  --scale-1000: 40px;
+  --scale-1200: 48px;
+  --scale-1300: 52px;
+  --scale-1600: 64px;
+  --scale-1800: 72px;
+  --scale-2000: 80px;
+  --scale-2400: 96px;
+  --scale-3000: 120px;
+
+
+  /* ----------------------------------------------------------
+     BORDA
+     ---------------------------------------------------------- */
+
+  --border-width-none:   var(--scale-0);
+  --border-width-small:  var(--scale-50);
+  --border-width-medium: var(--scale-100);
+
+  --border-radius-none:        var(--scale-0);
+  --border-radius-small:       var(--scale-50);
+  --border-radius-medium:      var(--scale-100);
+  --border-radius-large:       var(--scale-200);
+  --border-radius-super-large: var(--scale-300);
+  --border-radius-round:       var(--scale-3000);
+
+
+  /* ----------------------------------------------------------
+     GRID — Desktop (padrão)
+     ---------------------------------------------------------- */
+
+  --grid-largura: 1440px;
+  --grid-colunas: 12;
+  --grid-margem:  var(--scale-2000);  /* 80px */
+  --grid-gutter:  var(--scale-600);   /* 24px */
+}
+
+
+/* ============================================================
+   GRID — Tablet
+   ============================================================ */
+@media (max-width: 1024px) {
+  :root {
+    --grid-largura: 1024px;
+    --grid-colunas: 8;
+    --grid-margem:  var(--scale-1000);  /* 40px */
+    --grid-gutter:  var(--scale-500);   /* 20px */
+  }
+}
+
+
+/* ============================================================
+   GRID — Mobile
+   ============================================================ */
+@media (max-width: 768px) {
+  :root {
+    --grid-largura: 360px;
+    --grid-colunas: 4;
+    --grid-margem:  var(--scale-500);  /* 20px */
+    --grid-gutter:  var(--scale-400);  /* 16px */
+  }
+}

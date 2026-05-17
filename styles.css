@@ -1,8 +1,33 @@
 /* ============================================================
    Bete Bistrô — styles.css
+   Depende de tokens.css (carregado antes via <link>)
    ============================================================ */
 
-/* Fontes */
+
+/* ============================================================
+   FONTES
+   ============================================================ */
+@font-face {
+  font-family: 'GimmeWeb';
+  src: url('assets/fonts/GimmeExtraBold-Regular.otf') format('opentype');
+  font-weight: 800;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'RenosWeb';
+  src: url('assets/fonts/RenosRough-Light.otf') format('opentype');
+  font-weight: 300;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'RenosWeb';
+  src: url('assets/fonts/RenosRough-Regular.otf') format('opentype');
+  font-weight: 400;
+  font-display: swap;
+}
+
 @font-face {
   font-family: 'RenosWeb';
   src: url('assets/fonts/RenosRough-Bold.otf') format('opentype');
@@ -10,23 +35,58 @@
   font-display: swap;
 }
 
-/* Tokens */
-:root {
-  --color-laranja-500: #E95A2A;
-  --color-marfim-300: #FDEEE0;
-  --color-marfim-500: #FCE4CC;
-  --color-cinza-500: #5D5951;
+@font-face {
+  font-family: 'RenosWeb';
+  src: url('assets/fonts/RenosRough-Black.otf') format('opentype');
+  font-weight: 900;
+  font-display: swap;
+}
 
-  --font-subtitulo: 'RenosWeb', sans-serif;
+@font-face {
+  font-family: 'RadioCanadaWeb';
+  src: url('assets/fonts/RadioCanada-VariableFont_wdth,wght.ttf') format('truetype-variations');
+  font-weight: 300 700;
+  font-style: normal;
+  font-display: swap;
+}
 
-  /* Tamanhos fluidos */
-  --logo-size: clamp(80px, 66.67px + 3.704vw, 120px);
-  --icon-size: clamp(40px, 32px + 2.222vw, 64px);
-  --header-padding: clamp(20px, 5.556vw, 80px);
+@font-face {
+  font-family: 'RadioCanadaWeb';
+  src: url('assets/fonts/RadioCanada-Italic-VariableFont_wdth,wght.ttf') format('truetype-variations');
+  font-weight: 300 700;
+  font-style: italic;
+  font-display: swap;
 }
 
 
-/* Reset mínimo */
+/* ============================================================
+   TOKENS LOCAIS (fluidos, não estão no tokens.css)
+   ============================================================ */
+:root {
+  /* Header */
+  --logo-size:        clamp(80px, 66.67px + 3.704vw, 120px);
+  --icon-size:        clamp(40px, 32px + 2.222vw, 64px);
+  --header-padding:   clamp(20px, 5.556vw, 80px);
+
+  /*
+    Stroke fluido pros ícones.
+    Fórmula linear: 1px + (tamanho / 24)
+    icon 24px → stroke 2px
+    icon 48px → stroke 3px
+    icon 64px → stroke 3.67px
+  */
+  --icon-stroke: calc(1px + var(--icon-size) / 24);
+
+  /* Drawer */
+  --drawer-radius:   var(--border-radius-large);   /* 8px */
+  --drawer-gap:      var(--scale-600);              /* 24px — respiro entre botão e drawer */
+  --drawer-padding:  var(--scale-600);              /* 24px */
+}
+
+
+/* ============================================================
+   RESET MÍNIMO
+   ============================================================ */
 *,
 *::before,
 *::after {
@@ -35,9 +95,58 @@
   box-sizing: border-box;
 }
 
+ul, ol {
+  list-style: none;
+}
+
+button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: inherit;
+  font: inherit;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
 body {
   background: var(--color-marfim-300);
+  color: var(--color-cinza-500);
+  font-family: var(--font-body);
+  font-weight: 400;
+  letter-spacing: var(--font-kerning-body);
   -webkit-font-smoothing: antialiased;
+}
+
+
+/* ============================================================
+   ICON (classe global pros SVGs)
+
+   Aplica stroke fluido + non-scaling-stroke pra mantermos a
+   regra de "stroke proporcionalmente mais fino quanto maior".
+   ============================================================ */
+.icon {
+  display: block;
+  flex-shrink: 0;
+  width: var(--icon-size);
+  height: var(--icon-size);
+}
+
+.icon line,
+.icon path,
+.icon polyline,
+.icon polygon,
+.icon circle,
+.icon rect {
+  stroke: var(--color-laranja-500);
+  stroke-width: var(--icon-stroke);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+  fill: none;
 }
 
 
@@ -62,7 +171,7 @@ body {
 }
 
 
-/* Logo */
+/* ----- Logo ----- */
 .header__logo {
   display: block;
   flex-shrink: 0;
@@ -77,140 +186,468 @@ body {
 }
 
 
-/* Nav */
+/* ============================================================
+   NAV EXPANDIDO (desktop largo, sem gaveta)
+   ============================================================ */
 .header__nav {
   display: flex;
   align-items: center;
-  gap: 0;
   height: var(--logo-size);
   margin-left: auto;
+  margin-right: calc(var(--icon-size) + var(--scale-600));
 }
 
-/*
-  EXPAND (base state): ease-out, começa rápido, desacelera no fim.
-  padding-top: 6px dá espaço pro acento dentro do overflow: hidden.
-*/
-.header__nav a {
+.header__nav-item {
+  position: relative;
+  margin-left: var(--scale-1000);  /* 40px */
+}
+
+.header__nav-item:first-child {
+  margin-left: 0;
+}
+
+.header__nav-link {
   font-family: var(--font-subtitulo);
   font-weight: 700;
   font-size: 14px;
   letter-spacing: 0.02em;
+  text-transform: uppercase;
   color: var(--color-marfim-500);
-  text-decoration: none;
   white-space: nowrap;
   display: inline-block;
   overflow: hidden;
-  padding-top: 6px;
-  margin-left: 40px;
+  padding-top: 6px;   /* respiro pros acentos dentro do overflow */
   max-width: 300px;
   opacity: 1;
   transition:
     letter-spacing 0.45s cubic-bezier(0, 0.2, 0.35, 1),
     max-width 0.45s cubic-bezier(0, 0.2, 0.35, 1),
-    opacity 0.15s ease,
-    margin-left 0.45s cubic-bezier(0, 0.2, 0.35, 1);
+    opacity 0.15s ease;
 }
 
-.header__nav a:first-child {
-  margin-left: 0;
-}
-
-.header__nav a:hover {
+.header__nav-link:hover {
   opacity: 0.75;
 }
 
-/* Stagger expand: layout com delay, opacity sem delay (hover) */
-.header__nav a:nth-child(1) { transition-delay: 0.25s, 0.25s, 0s, 0.25s; }
-.header__nav a:nth-child(2) { transition-delay: 0.30s, 0.30s, 0s, 0.30s; }
-.header__nav a:nth-child(3) { transition-delay: 0.35s, 0.35s, 0s, 0.35s; }
-.header__nav a:nth-child(4) { transition-delay: 0.40s, 0.40s, 0s, 0.40s; }
-.header__nav a:nth-child(5) { transition-delay: 0.45s, 0.45s, 0s, 0.45s; }
+/* Stagger expand */
+.header__nav-item:nth-child(1) .header__nav-link { transition-delay: 0.25s, 0.25s, 0s; }
+.header__nav-item:nth-child(2) .header__nav-link { transition-delay: 0.30s, 0.30s, 0s; }
+.header__nav-item:nth-child(3) .header__nav-link { transition-delay: 0.35s, 0.35s, 0s; }
+.header__nav-item:nth-child(4) .header__nav-link { transition-delay: 0.40s, 0.40s, 0s; }
+.header__nav-item:nth-child(5) .header__nav-link { transition-delay: 0.45s, 0.45s, 0s; }
 
-/*
-  COLLAPSE: ease-in, começa devagar, acelera no fim.
-  Opacity tem delay extra pra só sumir quando as letras já estão esmagadas.
-*/
-.header.is-collapsed .header__nav a {
+/* Collapsed state — nav some letra por letra, esquerda → direita */
+.header.is-collapsed .header__nav-item {
+  margin-left: 0;
+}
+
+.header.is-collapsed .header__nav-link {
   letter-spacing: -0.5em;
   max-width: 0;
   opacity: 0;
-  margin-left: 0;
   transition:
     letter-spacing 0.4s cubic-bezier(0.55, 0, 1, 0.3),
     max-width 0.4s cubic-bezier(0.55, 0, 1, 0.3),
-    opacity 0.12s ease 0.28s,
-    margin-left 0.4s cubic-bezier(0.55, 0, 1, 0.3);
+    opacity 0.12s ease 0.28s;
 }
 
-/* Stagger collapse: esquerda → direita */
-.header.is-collapsed .header__nav a:nth-child(1) { transition-delay: 0s, 0s, 0.28s, 0s; }
-.header.is-collapsed .header__nav a:nth-child(2) { transition-delay: 0.05s, 0.05s, 0.33s, 0.05s; }
-.header.is-collapsed .header__nav a:nth-child(3) { transition-delay: 0.1s, 0.1s, 0.38s, 0.1s; }
-.header.is-collapsed .header__nav a:nth-child(4) { transition-delay: 0.15s, 0.15s, 0.43s, 0.15s; }
-.header.is-collapsed .header__nav a:nth-child(5) { transition-delay: 0.2s, 0.2s, 0.48s, 0.2s; }
+.header.is-collapsed .header__nav-item:nth-child(1) .header__nav-link { transition-delay: 0s, 0s, 0.28s; }
+.header.is-collapsed .header__nav-item:nth-child(2) .header__nav-link { transition-delay: 0.05s, 0.05s, 0.33s; }
+.header.is-collapsed .header__nav-item:nth-child(3) .header__nav-link { transition-delay: 0.1s, 0.1s, 0.38s; }
+.header.is-collapsed .header__nav-item:nth-child(4) .header__nav-link { transition-delay: 0.15s, 0.15s, 0.43s; }
+.header.is-collapsed .header__nav-item:nth-child(5) .header__nav-link { transition-delay: 0.2s, 0.2s, 0.48s; }
+
+
+/* ----- Dropdown no hover (nav expandido com filhas) ----- */
+.header__dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  margin-top: var(--scale-300);  /* 12px de respiro */
+  min-width: 220px;
+  background: var(--color-marfim-500);
+  border-radius: var(--border-radius-large);
+  padding: var(--scale-300) 0;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-8px) scale(0.96);
+  transform-origin: top left;
+  transition:
+    opacity 0.2s ease-out,
+    transform 0.25s ease-out,
+    visibility 0s linear 0.25s;
+  z-index: 90;
+}
+
+.header__nav-item--has-children:hover .header__dropdown,
+.header__nav-item--has-children:focus-within .header__dropdown {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0) scale(1);
+  transition:
+    opacity 0.2s ease-out,
+    transform 0.25s ease-out,
+    visibility 0s;
+}
+
+.header__dropdown a {
+  display: block;
+  padding: var(--scale-200) var(--scale-500);  /* 8px 20px */
+  font-family: var(--font-body);
+  font-size: 16px;
+  color: var(--color-cinza-500);
+  white-space: nowrap;
+  transition: opacity 0.15s ease;
+}
+
+.header__dropdown a:hover {
+  opacity: 0.7;
+}
+
+/* Dropdowns escondidos no estado collapsed (já tem a gaveta) */
+.header.is-collapsed .header__dropdown {
+  display: none;
+}
 
 
 /* ============================================================
-   HAMBURGER
+   BOTÃO MENU (hamburguer ↔ X)
 
-   Hover/active: CSS transition, sem delay.
-   Appear/disappear: CSS keyframes, controlados pelo JS.
+   Bolinha = ::before separado, fica embaixo do ícone.
+   Ícone = SVG inline com 3 lines + flip global no SVG.
    ============================================================ */
-.header__menu-btn {
+.menu-btn {
   position: absolute;
   right: var(--header-padding);
   top: calc((var(--logo-size) - var(--icon-size)) / 2);
-  background: none;
-  border: none;
-  cursor: pointer;
+  width: var(--icon-size);
+  height: var(--icon-size);
   padding: 0;
+  display: grid;
+  place-items: center;
   opacity: 0;
   visibility: hidden;
   transform: scale(0.4);
   transition: transform 0.2s ease;
+  z-index: 110;
 }
 
-.header__menu-btn.is-visible {
+.menu-btn.is-visible {
   opacity: 1;
   visibility: visible;
   transform: scale(1);
 }
 
-.header__menu-btn.is-visible:hover {
+.menu-btn.is-visible:hover {
   transform: scale(1.06);
 }
 
-.header__menu-btn.is-visible:active {
+.menu-btn.is-visible:active {
   transform: scale(0.96);
 }
 
-.header__menu-btn svg {
-  display: block;
-  width: var(--icon-size);
-  height: var(--icon-size);
+/* Bolinha (fundo circular) */
+.menu-btn__bg {
+  position: absolute;
+  inset: 0;
+  background: var(--color-marfim-500);
+  border-radius: var(--border-radius-round);
 }
 
-/* Appear: bounce via cubic-bezier overshoot */
+/* Ícone (SVG com 3 traços) */
+.menu-btn__icon {
+  position: relative;
+  z-index: 1;
+  width: 50%;     /* o SVG ocupa metade do botão; 24 dentro de 48, 32 dentro de 64 etc */
+  height: 50%;
+  transition: transform 0.4s cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+.menu-btn__line {
+  transform-origin: 12px 12px;
+  transform-box: view-box;
+  transition:
+    transform 0.4s cubic-bezier(0.65, 0, 0.35, 1),
+    opacity 0.2s ease;
+}
+
+/* --- Estado aberto: morph + flip --- */
+.menu-btn.is-open .menu-btn__icon {
+  transform: rotate(180deg);
+}
+
+.menu-btn.is-open .menu-btn__line--top {
+  transform: translateY(6px) rotate(45deg);
+}
+
+.menu-btn.is-open .menu-btn__line--middle {
+  opacity: 0;
+}
+
+.menu-btn.is-open .menu-btn__line--bottom {
+  transform: translateY(-6px) rotate(-45deg);
+}
+
+/* Appear/disappear (entrada do botão quando o nav colapsa) */
 @keyframes menuAppear {
   from { transform: scale(0.4); opacity: 0; }
-  to   { transform: scale(1); opacity: 1; }
+  to   { transform: scale(1);   opacity: 1; }
 }
 
-/* Disappear: bounce invertido */
 @keyframes menuDisappear {
-  0%   { transform: scale(1); opacity: 1; }
+  0%   { transform: scale(1);   opacity: 1; }
   60%  { opacity: 1; }
   100% { transform: scale(0.4); opacity: 0; }
 }
 
-.header__menu-btn.is-appearing {
+.menu-btn.is-appearing {
   visibility: visible;
   animation: menuAppear 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
 }
 
-.header__menu-btn.is-disappearing {
+.menu-btn.is-disappearing {
   visibility: visible;
   animation: menuDisappear 0.4s cubic-bezier(0.6, -0.55, 0.735, 0.045) forwards;
+}
+
+
+/* ============================================================
+   DRAWER (gaveta do menu)
+
+   Origem da animação: o canto sup-dir, que é onde o botão tá.
+   Desktop: gaveta de 312px alinhada à direita.
+   Mobile: modal cobrindo a tela menos as margens.
+   ============================================================ */
+.drawer {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 105;
+}
+
+/* Overlay — só aparece no mobile */
+.drawer__overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(25, 23, 20, 0);  /* cinza-900 com alpha animado */
+  transition: background 0.3s ease;
+  pointer-events: none;
+}
+
+/* Panel (a gaveta em si) */
+.drawer__panel {
+  position: absolute;
+  top: calc((var(--logo-size) - var(--icon-size)) / 2 + var(--icon-size) + var(--drawer-gap));
+  right: var(--header-padding);
+  width: 312px;
+  max-height: calc(100vh - 100px);
+  overflow-y: auto;
+  background: var(--color-marfim-500);
+  border-radius: var(--drawer-radius);
+  padding: var(--scale-300) 0;  /* 12px vertical, sem horizontal — fica no row */
+  opacity: 0;
+  visibility: hidden;
+  transform: scale(0);
+  transform-origin: top right;
+  transition:
+    transform 0.35s cubic-bezier(0, 0.2, 0.35, 1),   /* ease-out pro expand */
+    opacity 0.2s ease-out,
+    visibility 0s linear 0.35s;
+  pointer-events: auto;
+}
+
+/* --- Aberto --- */
+.drawer.is-open {
+  pointer-events: auto;
+}
+
+.drawer.is-open .drawer__panel {
+  opacity: 1;
+  visibility: visible;
+  transform: scale(1);
+  transition:
+    transform 0.35s cubic-bezier(0, 0.2, 0.35, 1),
+    opacity 0.2s ease-out,
+    visibility 0s linear 0s;
+}
+
+/* --- Fechando (collapse com ease-in) --- */
+.drawer.is-closing .drawer__panel {
+  transition:
+    transform 0.28s cubic-bezier(0.55, 0, 1, 0.3),    /* ease-in pro collapse */
+    opacity 0.18s ease-in,
+    visibility 0s linear 0.28s;
+}
+
+
+/* ============================================================
+   DRAWER — ITENS
+   ============================================================ */
+.drawer__item {
+  position: relative;
+}
+
+/* Divisor entre itens (2px marrom-300) */
+.drawer__item + .drawer__item::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: var(--drawer-padding);
+  right: var(--drawer-padding);
+  height: var(--border-width-small);  /* 2px */
+  background: var(--color-marrom-300);
+}
+
+/* Row — clicável tanto pra <button> (parent) quanto pra <a> (sem filhas) */
+.drawer__row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: var(--scale-400) var(--drawer-padding);  /* 16px 24px */
+  text-align: left;
+  cursor: pointer;
+  transition: opacity 0.15s ease;
+}
+
+.drawer__row:hover {
+  opacity: 0.75;
+}
+
+.drawer__label {
+  font-family: var(--font-subtitulo);
+  font-weight: 700;
+  font-size: 14px;            /* S5 */
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--color-cinza-500);
+  padding-top: 6px;            /* respiro pros acentos */
+  display: inline-block;
+}
+
+/* Chevron — tamanho fixo 24px aqui (não usa --icon-size global) */
+.drawer__chevron {
+  width: 24px;
+  height: 24px;
+  transition: transform 0.3s cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+.drawer__chevron path {
+  stroke-width: 2px;   /* override do fluido pq aqui o tamanho é fixo */
+}
+
+.drawer__item--expanded .drawer__chevron {
+  transform: rotate(180deg);
+}
+
+
+/* ============================================================
+   DRAWER — SUBMENU (accordion)
+
+   Trick do grid-template-rows: 0fr → 1fr pra animar altura
+   de 0 ao tamanho natural do conteúdo, sem precisar de JS pra
+   calcular altura.
+   ============================================================ */
+.drawer__submenu {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.3s cubic-bezier(0.55, 0, 1, 0.3);  /* ease-in collapse */
+}
+
+.drawer__submenu-inner {
+  min-height: 0;
+  overflow: hidden;
+}
+
+.drawer__item--expanded .drawer__submenu {
+  grid-template-rows: 1fr;
+  transition: grid-template-rows 0.35s cubic-bezier(0, 0.2, 0.35, 1);  /* ease-out expand */
+}
+
+.drawer__sublink {
+  display: block;
+  padding: var(--scale-300) var(--drawer-padding);  /* 12px 24px */
+  padding-left: calc(var(--drawer-padding) + var(--scale-400));  /* indent extra 16px */
+  font-family: var(--font-body);
+  font-size: 16px;
+  font-weight: 400;
+  color: var(--color-cinza-500);
+  transition: opacity 0.15s ease;
+}
+
+.drawer__sublink:hover {
+  opacity: 0.7;
+}
+
+.drawer__sublink--all {
+  font-weight: 600;
+}
+
+/* Espaço antes do primeiro sublink e depois do último */
+.drawer__submenu-inner > .drawer__sublink:first-child {
+  padding-top: var(--scale-200);  /* 8px */
+}
+
+.drawer__submenu-inner > .drawer__sublink:last-child {
+  padding-bottom: var(--scale-400);  /* 16px */
+}
+
+
+/* ============================================================
+   DRAWER — MOBILE (modal de tela cheia)
+   ============================================================ */
+@media (max-width: 768px) {
+  .drawer__overlay {
+    pointer-events: none;
+  }
+
+  .drawer.is-open .drawer__overlay {
+    background: rgba(25, 23, 20, 0.45);
+    pointer-events: auto;
+  }
+
+  .drawer.is-closing .drawer__overlay {
+    background: rgba(25, 23, 20, 0);
+  }
+
+  .drawer__panel {
+    /* Cobre a tela menos as margens (mesma do header) */
+    top: var(--header-padding);
+    right: var(--header-padding);
+    bottom: var(--header-padding);
+    left: var(--header-padding);
+    width: auto;
+    max-height: none;
+    padding: var(--scale-1600) var(--scale-200) var(--scale-600);  /* 64px topo (espaço pro botão) */
+  }
+
+  .drawer__row {
+    padding: var(--scale-500) var(--scale-500);  /* 20px */
+  }
+
+  .drawer__item + .drawer__item::before {
+    left: var(--scale-500);
+    right: var(--scale-500);
+  }
+
+  .drawer__sublink {
+    padding-left: calc(var(--scale-500) + var(--scale-400));
+    padding-right: var(--scale-500);
+  }
+}
+
+
+/* ============================================================
+   PREFERS-REDUCED-MOTION
+   ============================================================ */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }
 
 
@@ -244,11 +681,12 @@ body {
   color: var(--color-marfim-500);
   font-size: 14px;
   opacity: 0.4;
-  font-family: sans-serif;
 }
 
 
-/* Placeholder (remover quando tiver conteúdo) */
+/* ============================================================
+   PLACEHOLDER (remover quando tiver conteúdo)
+   ============================================================ */
 .placeholder-section {
   min-height: 100vh;
   display: flex;
@@ -257,5 +695,4 @@ body {
   font-size: 14px;
   color: var(--color-cinza-500);
   opacity: 0.3;
-  font-family: sans-serif;
 }

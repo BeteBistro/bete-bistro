@@ -4,33 +4,150 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Bete Bistrô</title>
+  <link rel="stylesheet" href="tokens.css">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
-<!-- Header -->
+<!-- ============================================================
+     HEADER
+     ============================================================ -->
 <header class="header" id="header">
+
+  <!-- Logo -->
   <a href="/" class="header__logo" aria-label="Bete Bistrô — Página inicial">
     <img src="assets/svg/logo.svg" alt="Bete Bistrô" width="120" height="120">
   </a>
 
+  <!-- Nav expandido (desktop largo) -->
   <nav class="header__nav" id="nav" aria-label="Navegação principal">
-    <a href="/cesta-cafe-colonial">CESTA COLONIAL</a>
-    <a href="/cesta-sazonal">SAZONAL</a>
-    <a href="/cafes-e-chocolates">CAFÉS E CHOCOLATES</a>
-    <a href="/frescos-e-congelados">FRESCOS E CONGELADOS</a>
-    <a href="/sobre">SOBRE NÓS</a>
+
+    <div class="header__nav-item header__nav-item--has-children">
+      <a href="/cafe-colonial" class="header__nav-link">Café Colonial</a>
+      <div class="header__dropdown" role="menu" aria-label="Subitens de Café Colonial">
+        <a href="/cesta-afeto" role="menuitem">Cesta Afeto</a>
+        <a href="/cesta-ternura" role="menuitem">Cesta Ternura</a>
+        <a href="/cesta-carinho" role="menuitem">Cesta Carinho</a>
+      </div>
+    </div>
+
+    <div class="header__nav-item header__nav-item--has-children">
+      <a href="/sazonais" class="header__nav-link">Sazonais</a>
+      <div class="header__dropdown" role="menu" aria-label="Subitens de Sazonais">
+        <a href="/cesta-inverno" role="menuitem">Cesta Inverno</a>
+        <a href="/cesta-junina" role="menuitem">Cesta Junina</a>
+      </div>
+    </div>
+
+    <div class="header__nav-item">
+      <a href="/cafes-e-chocolates" class="header__nav-link">Cafés e Chocolates</a>
+    </div>
+
+    <div class="header__nav-item header__nav-item--has-children">
+      <a href="/frescos-e-congelados" class="header__nav-link">Frescos e Congelados</a>
+      <div class="header__dropdown" role="menu" aria-label="Subitens de Frescos e Congelados">
+        <a href="/doces-bolos-tortas" role="menuitem">Doces, bolos e tortas</a>
+        <a href="/paes-salgados" role="menuitem">Pães e Salgados</a>
+      </div>
+    </div>
+
+    <div class="header__nav-item">
+      <a href="/sobre" class="header__nav-link">Sobre Nós</a>
+    </div>
+
   </nav>
 
-  <button class="header__menu-btn" id="menuBtn" aria-label="Abrir menu" aria-expanded="false">
-    <svg viewBox="0 0 72 72" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <rect width="72" height="72" rx="36" fill="#FCE4CC"/>
-      <path d="M22.5 36H49.5M22.5 27H49.5M22.5 45H49.5" stroke="#E95A2A" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- Botão menu (hamburguer/X) -->
+  <button class="menu-btn" id="menuBtn" aria-label="Abrir menu" aria-expanded="false" aria-controls="drawer">
+    <span class="menu-btn__bg" aria-hidden="true"></span>
+    <svg class="menu-btn__icon icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <line class="menu-btn__line menu-btn__line--top"    x1="3" y1="6"  x2="21" y2="6"  />
+      <line class="menu-btn__line menu-btn__line--middle" x1="3" y1="12" x2="21" y2="12" />
+      <line class="menu-btn__line menu-btn__line--bottom" x1="3" y1="18" x2="21" y2="18" />
     </svg>
   </button>
+
 </header>
 
-<!-- Hero (placeholder — conteúdo real vem depois) -->
+
+<!-- ============================================================
+     DRAWER (gaveta do menu)
+     ============================================================ -->
+<div class="drawer" id="drawer" aria-hidden="true">
+  <div class="drawer__overlay" aria-hidden="true"></div>
+
+  <nav class="drawer__panel" aria-label="Menu principal" role="navigation">
+    <ul class="drawer__list">
+
+      <li class="drawer__item drawer__item--has-children">
+        <button class="drawer__row" aria-expanded="false" aria-controls="sub-cafe-colonial">
+          <span class="drawer__label">Café Colonial</span>
+          <svg class="drawer__chevron icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M6 9L12 15L18 9" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+        </button>
+        <div class="drawer__submenu" id="sub-cafe-colonial">
+          <div class="drawer__submenu-inner">
+            <a href="/cafe-colonial" class="drawer__sublink drawer__sublink--all">Ver todos</a>
+            <a href="/cesta-afeto" class="drawer__sublink">Cesta Afeto</a>
+            <a href="/cesta-ternura" class="drawer__sublink">Cesta Ternura</a>
+            <a href="/cesta-carinho" class="drawer__sublink">Cesta Carinho</a>
+          </div>
+        </div>
+      </li>
+
+      <li class="drawer__item drawer__item--has-children">
+        <button class="drawer__row" aria-expanded="false" aria-controls="sub-sazonais">
+          <span class="drawer__label">Sazonais</span>
+          <svg class="drawer__chevron icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M6 9L12 15L18 9" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+        </button>
+        <div class="drawer__submenu" id="sub-sazonais">
+          <div class="drawer__submenu-inner">
+            <a href="/sazonais" class="drawer__sublink drawer__sublink--all">Ver todos</a>
+            <a href="/cesta-inverno" class="drawer__sublink">Cesta Inverno</a>
+            <a href="/cesta-junina" class="drawer__sublink">Cesta Junina</a>
+          </div>
+        </div>
+      </li>
+
+      <li class="drawer__item">
+        <a href="/cafes-e-chocolates" class="drawer__row drawer__row--link">
+          <span class="drawer__label">Cafés e Chocolates</span>
+        </a>
+      </li>
+
+      <li class="drawer__item drawer__item--has-children">
+        <button class="drawer__row" aria-expanded="false" aria-controls="sub-frescos">
+          <span class="drawer__label">Frescos e Congelados</span>
+          <svg class="drawer__chevron icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M6 9L12 15L18 9" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+        </button>
+        <div class="drawer__submenu" id="sub-frescos">
+          <div class="drawer__submenu-inner">
+            <a href="/frescos-e-congelados" class="drawer__sublink drawer__sublink--all">Ver todos</a>
+            <a href="/doces-bolos-tortas" class="drawer__sublink">Doces, bolos e tortas</a>
+            <a href="/paes-salgados" class="drawer__sublink">Pães e Salgados</a>
+          </div>
+        </div>
+      </li>
+
+      <li class="drawer__item">
+        <a href="/sobre" class="drawer__row drawer__row--link">
+          <span class="drawer__label">Sobre Nós</span>
+        </a>
+      </li>
+
+    </ul>
+  </nav>
+</div>
+
+
+<!-- ============================================================
+     HERO (placeholder — conteúdo real vem depois)
+     ============================================================ -->
 <section class="hero" id="hero">
   <p class="hero__placeholder">[ Hero — conteúdo será construído na próxima etapa ]</p>
 
@@ -43,7 +160,6 @@
   </div>
 </section>
 
-<!-- Placeholder pra gerar scroll (remover quando tiver conteúdo) -->
 <section class="placeholder-section">
   [ Próxima seção ]
 </section>
