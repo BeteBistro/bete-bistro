@@ -463,12 +463,12 @@ body {
 
 .menu-btn.is-appearing {
   visibility: visible;
-  animation: menuAppear 0.27s var(--ease-entrada) forwards;
+  animation: menuAppear 0.27s var(--ease-bounce-in) forwards;
 }
 
 .menu-btn.is-disappearing {
   visibility: visible;
-  animation: menuDisappear 0.27s var(--ease-saida) forwards;
+  animation: menuDisappear 0.27s var(--ease-bounce-out) forwards;
 }
 
 
@@ -772,66 +772,51 @@ body {
 
 /* ---------- ROTATOR DO TÍTULO (palavra que muda) ----------
    Cada caractere vira <span class="hero__title-char">. Cascata via --char-i (set no JS).
-   Padrão de animação: COLAPSAR (mesmo do menu desktop) — max-width + opacity.
-   Easing: --ease-entrada na expansão, --ease-saida no colapso. */
+   Animação: opacity + translateY por caractere (NÃO max-width — evita efeito de máscara).
+   Entrada: letras sobem pro lugar. Saída: letras sobem e somem. */
 .hero__title-rotator {
   display: inline-block;
-  white-space: nowrap;                 /* não quebra entre chars (que são inline-block) */
+  white-space: nowrap;
 }
 
 .hero__title-char {
   display: inline-block;
-  overflow: hidden;                    /* esconde o char enquanto max-width tá colapsado */
-  white-space: pre;                    /* preserva espaços (não-quebráveis) */
+  white-space: pre;
   vertical-align: baseline;
-  /* Espaço pro acento (ó, â, etc) caber dentro do box do overflow:hidden.
-     Margin negativo compensa pra não empurrar a linha. */
-  padding-top: 0.2em;
-  margin-top: -0.2em;
 }
 
+/* --- Entrada: cada char sobe e aparece (cascata esq → dir) --- */
 .hero__title-char:not(.is-leaving) {
-  animation-name: hero-char-expand-width, hero-char-fade-in;
-  animation-duration: 400ms, 300ms;
-  animation-timing-function: var(--ease-entrada), ease-out;
-  animation-fill-mode: backwards, backwards;
-  /* max-width cresce de cara; opacity começa 100ms depois e termina junto (em 400ms total) */
-  animation-delay:
-    calc(var(--char-i, 0) * 30ms),
-    calc(var(--char-i, 0) * 30ms + 100ms);
+  animation: hero-char-enter 400ms var(--ease-entrada) backwards;
+  animation-delay: calc(var(--char-i, 0) * 30ms);
 }
 
+/* --- Saída: cada char sobe e some (cascata REVERSA dir → esq) --- */
 .hero__title-char.is-leaving {
-  animation-name: hero-char-collapse-width, hero-char-fade-out;
-  animation-duration: 400ms, 120ms;
-  animation-timing-function: var(--ease-saida), linear;
-  animation-fill-mode: forwards, forwards;
-  /* Cascata REVERSA (do último char pro primeiro) — acompanha o colapso visual,
-     que comprime a palavra pra esquerda. Char da direita some primeiro.
-     Opacity SÓ começa em 70% do colapso pra deixar o movimento aparecer antes. */
-  animation-delay:
-    calc((var(--char-count, 1) - 1 - var(--char-i, 0)) * 30ms),
-    calc((var(--char-count, 1) - 1 - var(--char-i, 0)) * 30ms + 280ms);
+  animation: hero-char-leave 350ms var(--ease-saida) forwards;
+  animation-delay: calc((var(--char-count, 1) - 1 - var(--char-i, 0)) * 30ms);
 }
 
-@keyframes hero-char-expand-width {
-  from { max-width: 0; }
-  to   { max-width: 2em; }
+@keyframes hero-char-enter {
+  from {
+    opacity: 0;
+    transform: translateY(0.35em);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-@keyframes hero-char-collapse-width {
-  from { max-width: 2em; }
-  to   { max-width: 0; }
-}
-
-@keyframes hero-char-fade-in {
-  from { opacity: 0; }
-  to   { opacity: 1; }
-}
-
-@keyframes hero-char-fade-out {
-  from { opacity: 1; }
-  to   { opacity: 0; }
+@keyframes hero-char-leave {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-0.35em);
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

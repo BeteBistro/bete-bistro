@@ -11,8 +11,8 @@ Definidas como tokens em `tokens.css`.
 
 | Token | Valor | Pico | Uso |
 |---|---|---|---|
-| `--ease-entrada` | `cubic-bezier(0.82, 0, 0.42, 1)` | ~65% da duração | Elementos aparecendo |
-| `--ease-saida` | `cubic-bezier(0.58, 0, 0.18, 1)` | ~35% da duração | Elementos saindo |
+| `--ease-entrada` | `cubic-bezier(0.93, 0, 0.55, 1)` | ~67% da duração | Elementos aparecendo |
+| `--ease-saida` | `cubic-bezier(0.45, 0, 0.07, 1)` | ~33% da duração | Elementos saindo |
 
 Regras:
 - Pico de velocidade NUNCA é flat (platô). Sempre tem um pico pronunciado.
@@ -20,11 +20,15 @@ Regras:
 - Velocidade começa e termina em zero nos dois casos.
 - Direção inverte: se entra de baixo pra cima, sai de cima pra baixo. Se fade in da esquerda pra direita, fade out da direita pra esquerda.
 
-### Exceção: hover
+### Exceções
 
 | Token | Valor | Quando usar |
 |---|---|---|
 | `--ease-hover` | `ease` | Hover e interações instantâneas. Sem delay, sem pico. |
+| `--ease-bounce-in` | `cubic-bezier(0.34, 1.56, 0.64, 1)` | Appear com overshoot (menu-btn). |
+| `--ease-bounce-out` | `cubic-bezier(0.6, -0.55, 0.735, 0.045)` | Disappear com pull-back (menu-btn). |
+
+Bounce já reproduz pico de velocidade via escala (overshoot/pull-back). Não precisa da curva assimétrica em cima.
 
 ### Tokens legados (sem uso atual, mantidos pra referência)
 
@@ -48,39 +52,45 @@ Regras:
   - Texto sobre fundo laranja-500 → hover `--color-laranja-300`
 
 
-## 3. Padrão "colapsar" (cascata por caractere)
+## 3. Padrão "rotator" (cascata por caractere)
 
-Usado em: nav desktop, rotator do hero.
+Usado em: rotator do hero. Pode ser reaproveitado em outros textos animados.
 
-Cada caractere/item recebe `--char-i` (índice) e `--char-count` (total) via JS ou CSS.
+Cada caractere vira `<span>` com `--char-i` (índice) e `--char-count` (total) via JS.
 
-### Entrada (expandir)
+### Princípio: sem máscara
+
+NÃO usar `max-width` + `overflow: hidden` (cria efeito de janela/máscara cortando as letras). Em vez disso, cada letra aparece/some por conta própria via `opacity` + `transform`.
+
+### Entrada (letras sobem e aparecem)
 ```css
-animation-name: expand-width, fade-in;
-animation-duration: 400ms, 300ms;
-animation-timing-function: var(--ease-entrada), var(--ease-entrada);
-animation-fill-mode: backwards;
-animation-delay:
-  calc(var(--char-i) * 30ms),                    /* max-width */
-  calc(var(--char-i) * 30ms + 100ms);            /* opacity: delay menor, acompanha cedo */
+animation: hero-char-enter 400ms var(--ease-entrada) backwards;
+animation-delay: calc(var(--char-i) * 30ms);  /* cascata esq → dir */
+```
+```css
+@keyframes hero-char-enter {
+  from { opacity: 0; transform: translateY(0.35em); }
+  to   { opacity: 1; transform: translateY(0); }
+}
 ```
 
-### Saída (colapsar)
+### Saída (letras sobem e somem)
 ```css
-animation-name: collapse-width, fade-out;
-animation-duration: 400ms, 120ms;
-animation-timing-function: var(--ease-saida), linear;
-animation-fill-mode: forwards;
-animation-delay:
-  calc((var(--char-count) - 1 - var(--char-i)) * 30ms),       /* cascata REVERSA */
-  calc((var(--char-count) - 1 - var(--char-i)) * 30ms + 280ms); /* opacity: 70% do colapso */
+animation: hero-char-leave 350ms var(--ease-saida) forwards;
+animation-delay: calc((var(--char-count) - 1 - var(--char-i)) * 30ms);  /* cascata REVERSA */
+```
+```css
+@keyframes hero-char-leave {
+  from { opacity: 1; transform: translateY(0); }
+  to   { opacity: 0; transform: translateY(-0.35em); }
+}
 ```
 
 Regras:
-- Stagger: 30ms entre cada char/item.
-- Saída em cascata REVERSA: último char some primeiro (comprime da direita pra esquerda).
-- Opacity na saída só começa em ~70% do colapso do max-width (delay 280ms de 400ms). Duração curta (120ms, linear) pra terminar junto com max-width mas só cair no fim. Sem esse delay alto, o fade tampa o efeito de movimento.
-- Opacity na entrada com delay menor (~100ms) pra acompanhar mais cedo.
+- Stagger: 30ms entre cada char.
+- Entrada: cascata normal (esquerda → direita, primeira letra primeiro).
+- Saída: cascata REVERSA (direita → esquerda, última letra primeiro).
+- Uma única animation por estado (opacity + transform juntos). Sem separar em 2 animations com delays diferentes.
 
 
 ## 4. Animações por tipo de trigger

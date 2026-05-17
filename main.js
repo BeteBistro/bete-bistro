@@ -303,7 +303,7 @@
   var palavras    = ['Artesanal', 'Caseira', 'De mãe', 'De vó', 'Saborosa'];
   var rotatorIdx  = 0;
   var charDelay   = 30;               // ms entre cascata de cada char
-  var animOutMs   = 400;              // duração da animação de saída por char
+  var animOutMs   = 350;              // duração da animação de saída por char
   var animInMs    = 400;              // duração da animação de entrada por char
 
   // Fallback caso o vídeo não carregue metadata: 1s display por palavra
