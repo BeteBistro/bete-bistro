@@ -709,28 +709,36 @@ body {
   align-items: stretch;
   text-align: center;
 
-  padding-top: calc(var(--logo-size) + 48px);
+  /* Respiro top: depois do logo. Fluido 32 → 56.
+     Respiro bottom: 40 → 64 + altura aproximada da ondinha (14 → 32),
+     pra que o respiro VISUAL acima da ondinha bata com o do topo. */
+  padding-top: calc(var(--logo-size) + clamp(32px, 25px + 2.14vw, 56px));
+  padding-bottom: calc(clamp(40px, 33px + 2.14vw, 64px) + clamp(14px, 9px + 1.61vw, 32px));
   padding-left: var(--header-padding);
   padding-right: var(--header-padding);
-  padding-bottom: clamp(60px, 8vh, 100px);
 }
 
 .hero__title {
+  position: relative;
+  z-index: 2;                          /* na frente do vídeo */
   font-family: var(--font-titulo);
   font-weight: 800;
-  /* Curva passa por (375, 48) e (1440, 120). Em 320 cabe gracioso (~44px) */
-  font-size: clamp(40px, 22.64px + 6.76vw, 120px);
+  /* Curva passa por (360, 48) e (1440, 120). Em 375 ≈ 49. Em 320 ≈ 45 (overflow-x cuida) */
+  font-size: clamp(40px, 24px + 6.67vw, 120px);
   line-height: 1.03;
   color: var(--color-marfim-500);
   text-transform: uppercase;
-  margin: 0 0 12px 0;
+  /* Gap mobile título→vídeo fluido: 8 → 12 (320 → 768) */
+  margin: 0 0 clamp(8px, 5.14px + 0.89vw, 12px) 0;
 }
 
 .hero__video-shape {
   position: relative;
+  z-index: 1;
   aspect-ratio: 737 / 460;
   width: 100%;
-  margin: 0 0 48px 0;
+  /* Gap mobile vídeo→botão fluido: 32 → 48 (320 → 768) */
+  margin: 0 0 clamp(32px, 20.58px + 3.57vw, 48px) 0;
 }
 
 .hero__video {
@@ -742,7 +750,9 @@ body {
 }
 
 .hero__cta {
-  /* btn-primary já controla largura e altura no mobile */
+  position: relative;
+  z-index: 2;
+  /* btn-primary controla largura e altura */
 }
 
 .hero__ondinha {
@@ -753,6 +763,7 @@ body {
   background: var(--color-marfim-300);   /* aparece nas "mordidas" transparentes */
   line-height: 0;
   pointer-events: none;
+  z-index: 3;                          /* à frente de tudo no hero */
 }
 
 .hero__ondinha img {
@@ -761,9 +772,7 @@ body {
 }
 
 /* ---------- DESKTOP (≥ 769px) ----------
-   Grid 2-col com grid-template-areas. Reorganiza visualmente sem mexer no DOM.
-   align-items: center + row-gap 48 + align-self end/start nos textos =
-   título e botão colados pelo gap, vídeo centralizado no mesmo eixo do conjunto. */
+   Grid 2-col com grid-template-areas. Reorganiza visualmente sem mexer no DOM. */
 @media (min-width: 769px) {
   .hero {
     display: grid;
@@ -772,13 +781,10 @@ body {
       "title video"
       "cta   video";
     column-gap: clamp(16px, 2vw, 40px);
-    row-gap: 48px;                     /* distância entre título e botão */
+    /* Gap desktop título→botão fluido: 32 → 48 (768 → 1440) */
+    row-gap: clamp(32px, 13.62px + 2.39vw, 48px);
     align-items: center;
     text-align: left;
-
-    /* Gap logo→título fluido: 48px (768) → 80px (1440) */
-    padding-top: calc(var(--logo-size) + clamp(48px, 11px + 4.76vw, 80px));
-    padding-bottom: clamp(80px, 10vh, 140px);
   }
 
   .hero__title {
@@ -824,12 +830,13 @@ body {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  /* Height fluida: 52 (até 768) → 64 (em 1440+). Em mobile (≤768) cap em 52 */
-  height: clamp(52px, 38px + 1.8vw, 64px);
-  padding: 0 clamp(52px, 38px + 1.8vw, 64px);
+  /* Height fluido: 48 (≤768) → 64 (≥1440) */
+  height: clamp(48px, 29.72px + 2.38vw, 64px);
+  padding: 0 clamp(48px, 29.72px + 2.38vw, 64px);
   font-family: var(--font-subtitulo);
   font-weight: 900;
-  font-size: 16px;
+  /* Font fluido: 14 (≤768) → 16 (≥1440) */
+  font-size: clamp(14px, 11.71px + 0.298vw, 16px);
   letter-spacing: 0.02em;
   text-transform: uppercase;
   color: var(--color-laranja-500);
@@ -847,7 +854,7 @@ body {
   color: var(--color-marfim-300);
 }
 
-/* Mobile: largura total, sem padding lateral (height fluida ainda aplica, fica em 52) */
+/* Mobile: largura total, sem padding lateral (altura fica em 48 pelo cap da clamp) */
 @media (max-width: 768px) {
   .btn-primary {
     width: 100%;
