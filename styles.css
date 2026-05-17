@@ -216,7 +216,7 @@ body {
 .header__nav-link {
   font-family: var(--font-subtitulo);
   font-weight: 700;
-  font-size: 14px;
+  font-size: 13px;
   letter-spacing: 0.02em;
   text-transform: uppercase;
   color: var(--color-marfim-500);
@@ -240,7 +240,7 @@ body {
 .header__nav-chevron {
   width: 24px;
   height: 24px;
-  margin-left: var(--scale-200);  /* 8px do texto */
+  margin-left: var(--scale-100);  /* 4px do texto */
   vertical-align: middle;
 }
 
@@ -460,7 +460,7 @@ body {
   position: fixed;
   inset: 0;
   pointer-events: none;
-  z-index: 105;
+  z-index: 95;
 }
 
 /* Overlay — só aparece no mobile */
@@ -542,6 +542,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: var(--scale-400);          /* 16px mínimo entre label e chevron */
   width: 100%;
   padding: var(--scale-600) var(--drawer-padding);  /* 24px vertical, 32px horizontal */
   text-align: left;
@@ -606,8 +607,7 @@ body {
 
 .drawer__sublink {
   display: block;
-  padding: var(--scale-400) var(--drawer-padding);              /* 16px 32px (era 12px 24px) */
-  padding-left: calc(var(--drawer-padding) + var(--scale-600)); /* indent +24px (era +16px) */
+  padding: var(--scale-300) var(--drawer-padding);  /* 12px 32px — mesmo alinhamento à esquerda dos rows */
   font-family: var(--font-body);
   font-size: 16px;
   font-weight: 400;
@@ -625,11 +625,11 @@ body {
 
 /* Espaço extra no início e fim do submenu */
 .drawer__submenu-inner > .drawer__sublink:first-child {
-  padding-top: var(--scale-300);  /* 12px (era 8px) */
+  padding-top: var(--scale-200);  /* 8px */
 }
 
 .drawer__submenu-inner > .drawer__sublink:last-child {
-  padding-bottom: var(--scale-600);  /* 24px (era 16px) */
+  padding-bottom: var(--scale-500);  /* 20px */
 }
 
 
