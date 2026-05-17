@@ -194,17 +194,24 @@ body {
   align-items: center;
   height: var(--logo-size);
   margin-left: auto;
-  margin-right: calc(var(--icon-size) + var(--scale-600));
 }
 
 .header__nav-item {
   position: relative;
   margin-left: var(--scale-1000);  /* 40px */
+  transition: margin-left 0.45s cubic-bezier(0, 0.2, 0.35, 1);
 }
 
 .header__nav-item:first-child {
   margin-left: 0;
 }
+
+/* Stagger expand pra margin-left */
+.header__nav-item:nth-child(1) { transition-delay: 0.25s; }
+.header__nav-item:nth-child(2) { transition-delay: 0.30s; }
+.header__nav-item:nth-child(3) { transition-delay: 0.35s; }
+.header__nav-item:nth-child(4) { transition-delay: 0.40s; }
+.header__nav-item:nth-child(5) { transition-delay: 0.45s; }
 
 .header__nav-link {
   font-family: var(--font-subtitulo);
@@ -239,7 +246,15 @@ body {
 /* Collapsed state — nav some letra por letra, esquerda → direita */
 .header.is-collapsed .header__nav-item {
   margin-left: 0;
+  transition: margin-left 0.4s cubic-bezier(0.55, 0, 1, 0.3);
 }
+
+/* Stagger collapse pra margin-left */
+.header.is-collapsed .header__nav-item:nth-child(1) { transition-delay: 0s; }
+.header.is-collapsed .header__nav-item:nth-child(2) { transition-delay: 0.05s; }
+.header.is-collapsed .header__nav-item:nth-child(3) { transition-delay: 0.1s; }
+.header.is-collapsed .header__nav-item:nth-child(4) { transition-delay: 0.15s; }
+.header.is-collapsed .header__nav-item:nth-child(5) { transition-delay: 0.2s; }
 
 .header.is-collapsed .header__nav-link {
   letter-spacing: -0.5em;
@@ -360,6 +375,8 @@ body {
   z-index: 1;
   width: 50%;     /* o SVG ocupa metade do botão; 24 dentro de 48, 32 dentro de 64 etc */
   height: 50%;
+  /* Recalcula stroke local baseado no tamanho REAL do SVG (metade do botão) */
+  --icon-stroke: calc(1px + (var(--icon-size) / 2) / 24);
   transition: transform 0.4s cubic-bezier(0.65, 0, 0.35, 1);
 }
 
@@ -377,7 +394,9 @@ body {
 }
 
 .menu-btn.is-open .menu-btn__line--top {
-  transform: translateY(6px) rotate(45deg);
+  /* Ordem: primeiro translate (move pro centro y=12), depois rotate.
+     Em CSS string: a última aplicada vem primeiro, então rotate primeiro na string. */
+  transform: rotate(45deg) translateY(6px);
 }
 
 .menu-btn.is-open .menu-btn__line--middle {
@@ -385,7 +404,7 @@ body {
 }
 
 .menu-btn.is-open .menu-btn__line--bottom {
-  transform: translateY(-6px) rotate(-45deg);
+  transform: rotate(-45deg) translateY(-6px);
 }
 
 /* Appear/disappear (entrada do botão quando o nav colapsa) */
