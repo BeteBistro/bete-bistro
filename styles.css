@@ -245,7 +245,7 @@ body {
     color 0.15s ease;
 }
 
-@media (hover: hover) {
+@media (hover: hover) and (pointer: fine) {
   .header__nav-link:hover {
     color: var(--color-laranja-300);
   }
@@ -349,7 +349,7 @@ body {
   transition: color 0.15s ease;
 }
 
-@media (hover: hover) {
+@media (hover: hover) and (pointer: fine) {
   .header__dropdown a:hover {
     color: var(--color-laranja-500);
   }
@@ -390,7 +390,7 @@ body {
   transform: scale(1);
 }
 
-@media (hover: hover) {
+@media (hover: hover) and (pointer: fine) {
   .menu-btn.is-visible:hover,
   .menu-btn.is-visible.is-open:hover {
     transform: scale(1.06);
@@ -575,7 +575,7 @@ body {
   transition: color 0.15s ease;
 }
 
-@media (hover: hover) {
+@media (hover: hover) and (pointer: fine) {
   .drawer__row:hover {
     color: var(--color-laranja-500);
   }
@@ -641,7 +641,7 @@ body {
   transition: color 0.15s ease;
 }
 
-@media (hover: hover) {
+@media (hover: hover) and (pointer: fine) {
   .drawer__sublink:hover {
     color: var(--color-laranja-500);
   }
@@ -690,6 +690,19 @@ body {
     padding: var(--scale-400) 0;
     filter: none;                        /* sem sombra no mobile */
   }
+}
+
+
+/* ============================================================
+   NO-ANIM — desliga transitions/animations temporariamente
+   Usado no init do JS pra ajustar estado sem animação visível.
+   ============================================================ */
+.no-anim,
+.no-anim *,
+.no-anim *::before,
+.no-anim *::after {
+  transition: none !important;
+  animation: none !important;
 }
 
 
@@ -960,7 +973,7 @@ body {
     color 0.2s ease;
 }
 
-@media (hover: hover) {
+@media (hover: hover) and (pointer: fine) {
   .btn-primary:hover {
     background: var(--color-laranja-300);
     color: var(--color-marfim-300);
