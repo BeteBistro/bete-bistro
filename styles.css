@@ -701,18 +701,18 @@ body {
   min-height: 100vh;
   background: var(--color-laranja-500);
   padding:
-    clamp(120px, 14vh, 200px)    /* top — espaço pro header */
+    calc(var(--logo-size) + 80px)    /* top: logo + 80px de respiro */
     var(--header-padding)
-    clamp(80px, 10vh, 140px);    /* bottom — espaço pra ondinha */
+    clamp(80px, 10vh, 140px);        /* bottom: respiro pra ondinha */
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  grid-template-rows: 1fr auto;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.5fr);
+  grid-template-rows: auto 1fr;
   grid-template-areas:
     "title  video"
     "cta    video";
-  column-gap: clamp(24px, 4vw, 64px);
-  row-gap: clamp(32px, 5vh, 64px);
-  align-items: center;
+  column-gap: clamp(16px, 2vw, 40px);
+  row-gap: 48px;                     /* entre título e botão (desktop) */
+  align-items: start;
 }
 
 .hero__title {
@@ -725,12 +725,10 @@ body {
   color: var(--color-marfim-500);
   text-transform: uppercase;
   margin: 0;
-  align-self: end;
 }
 
 .hero__cta {
   grid-area: cta;
-  align-self: start;
   justify-self: start;
 }
 
@@ -739,8 +737,7 @@ body {
   position: relative;
   aspect-ratio: 737 / 460;
   width: 100%;
-  max-width: 737px;
-  justify-self: center;
+  align-self: center;                /* vídeo centralizado vertical no hero */
 }
 
 .hero__video {
@@ -765,7 +762,7 @@ body {
   display: block;
 }
 
-/* HERO — MOBILE (stack vertical: título, vídeo, botão) */
+/* HERO — MOBILE (stack vertical com gaps específicos: 48/12/48) */
 @media (max-width: 768px) {
   .hero {
     grid-template-columns: 1fr;
@@ -774,22 +771,40 @@ body {
       "title"
       "video"
       "cta";
-    padding:
-      clamp(100px, 18vh, 160px)
-      var(--header-padding)
-      clamp(80px, 10vh, 120px);
-    row-gap: clamp(24px, 4vh, 40px);
+    padding-top: calc(var(--logo-size) + 48px);   /* logo + 48px */
+    row-gap: 0;                                    /* gaps controlados por margin */
     text-align: center;
   }
 
   .hero__title {
-    align-self: auto;
+    margin: 0 0 12px 0;                            /* 12px até o vídeo */
     text-align: center;
+  }
+
+  .hero__video-shape {
+    margin-bottom: 48px;                           /* 48px até o botão */
+    align-self: auto;
   }
 
   .hero__cta {
     justify-self: stretch;
   }
+}
+
+
+/* ============================================================
+   NEXT SECTION (placeholder de scroll — substituir quando tiver conteúdo)
+   ============================================================ */
+.next-section {
+  min-height: 100vh;
+  background: var(--color-marfim-300);
+  padding: clamp(60px, 10vh, 140px) var(--header-padding);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-cinza-500);
+  opacity: 0.4;
+  font-size: 14px;
 }
 
 
