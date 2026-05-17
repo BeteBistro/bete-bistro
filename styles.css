@@ -700,43 +700,37 @@ body {
 .hero {
   position: relative;
   width: 100%;
-  min-height: 100vh;
   background: var(--color-laranja-500);
-  padding:
-    calc(var(--logo-size) + 80px)    /* top: logo + 80px */
-    var(--header-padding)
-    clamp(80px, 10vh, 140px);        /* bottom: respiro pra ondinha */
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1.75fr);
-  column-gap: clamp(16px, 2vw, 40px);
-  align-items: center;               /* texto+botão e vídeo centralizados vertical no mesmo eixo */
-}
+  overflow-x: hidden;                  /* rede de segurança em viewports < 360 */
 
-.hero__text {
+  /* Mobile default: flex column, ordem DOM natural (title → video → cta) */
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
-  gap: 48px;                         /* entre título e botão (desktop) */
-  position: relative;
-  z-index: 2;                        /* na frente do vídeo */
+  align-items: stretch;
+  text-align: center;
+
+  padding-top: calc(var(--logo-size) + 48px);
+  padding-left: var(--header-padding);
+  padding-right: var(--header-padding);
+  padding-bottom: clamp(60px, 8vh, 100px);
 }
 
 .hero__title {
   font-family: var(--font-titulo);
   font-weight: 800;
-  /* Hero size fluido: 48px mobile → 96px tablet → 120px desktop */
-  font-size: clamp(48px, 32px + 6vw, 120px);
+  /* Curva passa por (375, 48) e (1440, 120). Em 320 cabe gracioso (~44px) */
+  font-size: clamp(40px, 22.64px + 6.76vw, 120px);
   line-height: 1.03;
   color: var(--color-marfim-500);
   text-transform: uppercase;
-  margin: 0;
+  margin: 0 0 12px 0;
 }
 
 .hero__video-shape {
   position: relative;
-  z-index: 1;
   aspect-ratio: 737 / 460;
   width: 100%;
+  margin: 0 0 48px 0;
 }
 
 .hero__video {
@@ -747,12 +741,16 @@ body {
   clip-path: url(#hero-shape);
 }
 
+.hero__cta {
+  /* btn-primary já controla largura e altura no mobile */
+}
+
 .hero__ondinha {
   position: absolute;
   bottom: 0;
   left: 0;
   right: 0;
-  background: var(--color-marfim-300);
+  background: var(--color-marfim-300);   /* aparece nas "mordidas" transparentes */
   line-height: 0;
   pointer-events: none;
 }
@@ -762,35 +760,43 @@ body {
   display: block;
 }
 
-/* HERO — MOBILE (stack vertical: title → video → cta, gaps 12/48) */
-@media (max-width: 768px) {
+/* ---------- DESKTOP (≥ 769px) ----------
+   Grid 2-col com grid-template-areas. Reorganiza visualmente sem mexer no DOM.
+   align-items: center + row-gap 48 + align-self end/start nos textos =
+   título e botão colados pelo gap, vídeo centralizado no mesmo eixo do conjunto. */
+@media (min-width: 769px) {
   .hero {
-    grid-template-columns: 1fr;
-    align-items: stretch;
-    padding-top: calc(var(--logo-size) + 48px);   /* logo + 48px */
-    text-align: center;
-  }
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.75fr);
+    grid-template-areas:
+      "title video"
+      "cta   video";
+    column-gap: clamp(16px, 2vw, 40px);
+    row-gap: 48px;                     /* distância entre título e botão */
+    align-items: center;
+    text-align: left;
 
-  /* hero__text "desaparece" no mobile pra os filhos virarem direct children
-     do grid, permitindo reordenar com `order` (título → vídeo → botão) */
-  .hero__text {
-    display: contents;
+    /* Gap logo→título fluido: 48px (768) → 80px (1440) */
+    padding-top: calc(var(--logo-size) + clamp(48px, 11px + 4.76vw, 80px));
+    padding-bottom: clamp(80px, 10vh, 140px);
   }
 
   .hero__title {
-    order: 1;
-    margin: 0 0 12px 0;             /* 12px até o vídeo */
-    text-align: center;
+    grid-area: title;
+    align-self: end;                   /* cola no fundo da row 1 */
+    margin: 0;
   }
 
   .hero__video-shape {
-    order: 2;
-    margin-bottom: 48px;             /* 48px até o botão */
+    grid-area: video;
+    align-self: center;
+    margin: 0;
   }
 
   .hero__cta {
-    order: 3;
-    align-self: stretch;
+    grid-area: cta;
+    align-self: start;                 /* cola no topo da row 2 */
+    justify-self: start;
   }
 }
 
@@ -818,8 +824,9 @@ body {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  height: 64px;
-  padding: 0 64px;
+  /* Height fluida: 52 (até 768) → 64 (em 1440+). Em mobile (≤768) cap em 52 */
+  height: clamp(52px, 38px + 1.8vw, 64px);
+  padding: 0 clamp(52px, 38px + 1.8vw, 64px);
   font-family: var(--font-subtitulo);
   font-weight: 900;
   font-size: 16px;
@@ -840,15 +847,7 @@ body {
   color: var(--color-marfim-300);
 }
 
-/* Tablet: altura e padding reduzidos */
-@media (max-width: 1024px) {
-  .btn-primary {
-    height: 52px;
-    padding: 0 52px;
-  }
-}
-
-/* Mobile: largura total, sem padding lateral (herda 52px de altura do tablet) */
+/* Mobile: largura total, sem padding lateral (height fluida ainda aplica, fica em 52) */
 @media (max-width: 768px) {
   .btn-primary {
     width: 100%;
