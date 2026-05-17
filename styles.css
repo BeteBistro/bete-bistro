@@ -701,7 +701,7 @@ body {
   position: relative;
   width: 100%;
   background: var(--color-laranja-500);
-  overflow-x: hidden;                  /* rede de segurança em viewports < 360 */
+  overflow: hidden;                    /* corta o vídeo do parallax + rede pra título estourar */
 
   /* Mobile default: flex column, ordem DOM natural (title → video → cta) */
   display: flex;
@@ -744,6 +744,47 @@ body {
   margin: 0 0 16px 0;
 }
 
+/* ---------- ROTATOR DO TÍTULO (palavra que muda) ----------
+   Cada caractere vira <span class="hero__title-char">. Cascata via --char-i (set no JS).
+   Entrada: sobe + fade in. Saída: sobe + fade out. */
+.hero__title-rotator {
+  display: inline-block;
+}
+
+.hero__title-char {
+  display: inline-block;
+  white-space: pre;                    /* preserva espaços (não-quebráveis) */
+}
+
+.hero__title-char:not(.is-leaving) {
+  animation: hero-char-in 600ms cubic-bezier(0.22, 1, 0.36, 1) backwards;
+  animation-delay: calc(var(--char-i, 0) * 40ms);
+}
+
+.hero__title-char.is-leaving {
+  animation: hero-char-out 500ms cubic-bezier(0.7, 0, 0.84, 0) forwards;
+  animation-delay: calc(var(--char-i, 0) * 40ms);
+}
+
+@keyframes hero-char-in {
+  from { transform: translateY(40%); opacity: 0; }
+  60%  { opacity: 1; }
+  to   { transform: translateY(0);    opacity: 1; }
+}
+
+@keyframes hero-char-out {
+  from { transform: translateY(0);    opacity: 1; }
+  40%  { opacity: 0; }
+  to   { transform: translateY(-40%); opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero__title-char,
+  .hero__title-char.is-leaving {
+    animation: none;
+  }
+}
+
 .hero__video-shape {
   position: relative;
   z-index: 1;
@@ -773,18 +814,29 @@ body {
   bottom: 0;
   left: 0;
   right: 0;
-  background: var(--color-marfim-300);   /* aparece nas "mordidas" transparentes */
-  line-height: 0;
-  pointer-events: none;
+  /* Altura aproximada do SVG escalado em cada quebra (mobile 16 → desktop 32) */
+  height: clamp(14px, 9px + 1.61vw, 32px);
+  background-color: var(--color-marfim-300);   /* aparece nas "mordidas" transparentes */
+  background-image: url('assets/svg/ondinha-mobile.svg');
+  background-size: auto 100%;          /* altura 100%, largura proporcional ao SVG */
+  background-repeat: repeat-x;         /* tileia infinitamente — sem "flat" nas bordas */
+  background-position: 0 bottom;
   z-index: 3;                          /* à frente de tudo no hero */
-  overflow: hidden;                    /* recorta a img que vai oscilar lateralmente */
+  pointer-events: none;
+  will-change: background-position;
 }
 
-.hero__ondinha img {
-  width: 140%;                         /* 20% extra de cada lado pro parallax */
-  margin-left: -20%;                   /* centraliza */
-  display: block;
-  will-change: transform;
+/* SVG maior em viewports maiores: ondas com tamanho proporcional ao Figma */
+@media (min-width: 481px) {
+  .hero__ondinha {
+    background-image: url('assets/svg/ondinha-tablet.svg');
+  }
+}
+
+@media (min-width: 1025px) {
+  .hero__ondinha {
+    background-image: url('assets/svg/ondinha-desktop.svg');
+  }
 }
 
 /* ---------- DESKTOP (≥ 769px) ----------

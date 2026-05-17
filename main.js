@@ -178,8 +178,9 @@
   /* ============================================================
      3. HERO — PARALLAX (vídeo e ondinha)
 
-     Vídeo: sobe mais devagar que o scroll (translateY positivo).
-     Ondinha: vai pra direita ao scrollar pra baixo (translateX positivo).
+     Vídeo: sobe mais devagar que o scroll (translateY positivo). Cropado pelo
+     overflow:hidden do hero, dando sensação de "afundar" sob a ondinha.
+     Ondinha: background-position-x cresce ao scrollar pra baixo (tile infinito).
 
      Fator 0.3 = a cada 100px scrollados, elemento move 30px.
      Respeita prefers-reduced-motion.
@@ -188,7 +189,7 @@
 
   if (!prefersReducedMotion) {
     var heroVideo   = document.querySelector('.hero__video-shape');
-    var heroOndinha = document.querySelector('.hero__ondinha img');
+    var heroOndinha = document.querySelector('.hero__ondinha');
     var hero        = document.getElementById('hero');
 
     if (hero && (heroVideo || heroOndinha)) {
@@ -197,7 +198,7 @@
       var factor      = 0.3;
 
       function updateParallax() {
-        // Limita ao tamanho do hero pra não desperdiçar cálculo quando hero saiu da viewport
+        // Limita ao tamanho do hero (depois que sai da viewport, não precisa atualizar)
         var heroHeight = hero.offsetHeight;
         var sy = Math.min(lastScrollY, heroHeight);
         var offset = sy * factor;
@@ -206,7 +207,8 @@
           heroVideo.style.transform = 'translate3d(0, ' + offset + 'px, 0)';
         }
         if (heroOndinha) {
-          heroOndinha.style.transform = 'translate3d(' + offset + 'px, 0, 0)';
+          // background-position-x: positivo = bg "anda" pra direita (ondinha vai pra direita)
+          heroOndinha.style.backgroundPositionX = offset + 'px';
         }
 
         ticking = false;
@@ -223,6 +225,61 @@
       window.addEventListener('scroll', onScroll, { passive: true });
       updateParallax(); // estado inicial (caso a página carregue já scrollada)
     }
+  }
+
+
+  /* ============================================================
+     4. HERO — ROTATOR DO TÍTULO ("Artesanal" → "Caseira" → "De mãe" ...)
+
+     Cada palavra dura 3s. Caracteres entram/saem em cascata (40ms entre cada).
+     ============================================================ */
+  var rotatorEl = document.querySelector('.hero__title-rotator');
+  var palavras = ['Artesanal', 'Caseira', 'De mãe', 'De vó', 'Afetiva', 'Saborosa'];
+  var rotatorIdx = 0;
+  var displayTime = 3000;             // ms que cada palavra fica estática
+  var charDelay   = 40;               // ms entre cascata de cada char
+  var animOutMs   = 500;              // duração da animação de saída por char
+  var animInMs    = 600;              // duração da animação de entrada por char
+
+  function splitWordToChars(word) {
+    if (!rotatorEl) return;
+    rotatorEl.innerHTML = '';
+    var chars = word.split('');
+    for (var i = 0; i < chars.length; i++) {
+      var span = document.createElement('span');
+      span.className = 'hero__title-char';
+      span.style.setProperty('--char-i', i);
+      // Preserva espaço com nbsp pra não colapsar
+      span.textContent = chars[i] === ' ' ? '\u00A0' : chars[i];
+      rotatorEl.appendChild(span);
+    }
+  }
+
+  function rotatorTick() {
+    if (!rotatorEl) return;
+    var chars = rotatorEl.querySelectorAll('.hero__title-char');
+
+    // Aplica saída (cascata via --char-i no CSS)
+    for (var i = 0; i < chars.length; i++) {
+      chars[i].classList.add('is-leaving');
+    }
+
+    // Tempo total de saída = duração + cascata do último char
+    var totalOut = animOutMs + ((chars.length - 1) * charDelay);
+
+    window.setTimeout(function () {
+      rotatorIdx = (rotatorIdx + 1) % palavras.length;
+      splitWordToChars(palavras[rotatorIdx]);
+      // Próximo tick depois de display + cascata de entrada
+      var nextDelay = displayTime + animInMs + ((palavras[rotatorIdx].length - 1) * charDelay);
+      window.setTimeout(rotatorTick, nextDelay);
+    }, totalOut);
+  }
+
+  if (rotatorEl && !prefersReducedMotion) {
+    splitWordToChars(palavras[0]);
+    var firstDelay = displayTime + animInMs + ((palavras[0].length - 1) * charDelay);
+    window.setTimeout(rotatorTick, firstDelay);
   }
 
 })();
