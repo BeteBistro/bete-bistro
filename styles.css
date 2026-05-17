@@ -229,6 +229,7 @@ body {
   transition:
     letter-spacing 0.45s cubic-bezier(0, 0.2, 0.35, 1),
     max-width 0.45s cubic-bezier(0, 0.2, 0.35, 1),
+    opacity 0.15s ease,
     color 0.15s ease;
 }
 
@@ -240,7 +241,7 @@ body {
 .header__nav-chevron {
   width: 24px;
   height: 24px;
-  margin-left: var(--scale-100);  /* 4px do texto */
+  margin-left: 0;
   vertical-align: middle;
 }
 
@@ -253,12 +254,12 @@ body {
   fill: none;
 }
 
-/* Stagger expand */
-.header__nav-item:nth-child(1) .header__nav-link { transition-delay: 0s, 0s, 0s; }
-.header__nav-item:nth-child(2) .header__nav-link { transition-delay: 0.05s, 0.05s, 0s; }
-.header__nav-item:nth-child(3) .header__nav-link { transition-delay: 0.1s, 0.1s, 0s; }
-.header__nav-item:nth-child(4) .header__nav-link { transition-delay: 0.15s, 0.15s, 0s; }
-.header__nav-item:nth-child(5) .header__nav-link { transition-delay: 0.2s, 0.2s, 0s; }
+/* Stagger expand — opacity volta primeiro (delay 0), depois letter-spacing e max-width */
+.header__nav-item:nth-child(1) .header__nav-link { transition-delay: 0s, 0s, 0s, 0s; }
+.header__nav-item:nth-child(2) .header__nav-link { transition-delay: 0.05s, 0.05s, 0.05s, 0s; }
+.header__nav-item:nth-child(3) .header__nav-link { transition-delay: 0.1s, 0.1s, 0.1s, 0s; }
+.header__nav-item:nth-child(4) .header__nav-link { transition-delay: 0.15s, 0.15s, 0.15s, 0s; }
+.header__nav-item:nth-child(5) .header__nav-link { transition-delay: 0.2s, 0.2s, 0.2s, 0s; }
 
 /* Collapsed state — nav some letra por letra, esquerda → direita */
 .header.is-collapsed .header__nav-item {
@@ -280,14 +281,15 @@ body {
   transition:
     letter-spacing 0.4s cubic-bezier(0.55, 0, 1, 0.3),
     max-width 0.4s cubic-bezier(0.55, 0, 1, 0.3),
-    opacity 0.3s ease 0.1s;
+    opacity 0.15s ease 0.25s;
 }
 
-.header.is-collapsed .header__nav-item:nth-child(1) .header__nav-link { transition-delay: 0s, 0s, 0.1s; }
-.header.is-collapsed .header__nav-item:nth-child(2) .header__nav-link { transition-delay: 0.05s, 0.05s, 0.15s; }
-.header.is-collapsed .header__nav-item:nth-child(3) .header__nav-link { transition-delay: 0.1s, 0.1s, 0.2s; }
-.header.is-collapsed .header__nav-item:nth-child(4) .header__nav-link { transition-delay: 0.15s, 0.15s, 0.25s; }
-.header.is-collapsed .header__nav-item:nth-child(5) .header__nav-link { transition-delay: 0.2s, 0.2s, 0.3s; }
+/* Stagger collapse — opacity só some no FIM (delay = duração das outras - duração do opacity) */
+.header.is-collapsed .header__nav-item:nth-child(1) .header__nav-link { transition-delay: 0s, 0s, 0.25s; }
+.header.is-collapsed .header__nav-item:nth-child(2) .header__nav-link { transition-delay: 0.05s, 0.05s, 0.30s; }
+.header.is-collapsed .header__nav-item:nth-child(3) .header__nav-link { transition-delay: 0.1s, 0.1s, 0.35s; }
+.header.is-collapsed .header__nav-item:nth-child(4) .header__nav-link { transition-delay: 0.15s, 0.15s, 0.40s; }
+.header.is-collapsed .header__nav-item:nth-child(5) .header__nav-link { transition-delay: 0.2s, 0.2s, 0.45s; }
 
 
 /* ----- Dropdown no hover (nav expandido com filhas) ----- */
@@ -305,8 +307,8 @@ body {
   transform: translateY(-8px) scale(0.96);
   transform-origin: top left;
   transition:
-    opacity 0.2s ease-out,
-    transform 0.25s ease-out,
+    opacity 0.12s ease-in 0.13s,                 /* desce só no fim do unhover */
+    transform 0.25s ease-in,
     visibility 0s linear 0.25s;
   z-index: 90;
 }
@@ -317,7 +319,7 @@ body {
   visibility: visible;
   transform: translateY(0) scale(1);
   transition:
-    opacity 0.2s ease-out,
+    opacity 0.15s ease-out,                       /* sobe rápido no começo */
     transform 0.25s ease-out,
     visibility 0s;
 }
@@ -428,8 +430,9 @@ body {
 
 /* Appear/disappear (entrada do botão quando o nav colapsa) */
 @keyframes menuAppear {
-  from { transform: scale(0.4); opacity: 0; }
-  to   { transform: scale(1);   opacity: 1; }
+  0%   { transform: scale(0.4); opacity: 0; }
+  40%  { opacity: 1; }
+  100% { transform: scale(1); opacity: 1; }
 }
 
 @keyframes menuDisappear {
@@ -510,11 +513,11 @@ body {
     visibility 0s linear 0s;
 }
 
-/* --- Fechando (collapse com ease-in) --- */
+/* --- Fechando (collapse com ease-in, opacity só no fim) --- */
 .drawer.is-closing .drawer__panel {
   transition:
     transform 0.28s cubic-bezier(0.55, 0, 1, 0.3),    /* ease-in pro collapse */
-    opacity 0.18s ease-in,
+    opacity 0.12s ease-in 0.16s,                       /* desce só no fim */
     visibility 0s linear 0.28s;
 }
 
@@ -526,7 +529,7 @@ body {
   position: relative;
 }
 
-/* Divisor entre itens (2px marrom-200) */
+/* Divisor entre itens (2px ocre-200) */
 .drawer__item + .drawer__item::before {
   content: '';
   position: absolute;
@@ -534,7 +537,7 @@ body {
   left: var(--drawer-padding);
   right: var(--drawer-padding);
   height: var(--border-width-small);  /* 2px */
-  background: var(--color-marrom-200);
+  background: var(--color-ocre-200);
 }
 
 /* Row — clicável tanto pra <button> (parent) quanto pra <a> (sem filhas) */
@@ -629,6 +632,7 @@ body {
 }
 
 .drawer__submenu-inner > .drawer__sublink:last-child {
+  margin-top: var(--scale-600);     /* 24px de margem antes (respiro igual aos rows fechados) */
   padding-bottom: var(--scale-500);  /* 20px */
 }
 
