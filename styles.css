@@ -177,12 +177,23 @@ body {
   flex-shrink: 0;
   width: var(--logo-size);
   height: var(--logo-size);
+  transition:
+    width 0.3s ease-out,
+    height 0.3s ease-out;
 }
 
 .header__logo img {
   width: 100%;
   height: 100%;
   display: block;
+}
+
+/* Mobile: logo encolhe 12px quando a gaveta tá aberta */
+@media (max-width: 768px) {
+  body.drawer-open .header__logo {
+    width: calc(var(--logo-size) - 12px);
+    height: calc(var(--logo-size) - 12px);
+  }
 }
 
 
@@ -632,8 +643,7 @@ body {
 }
 
 .drawer__submenu-inner > .drawer__sublink:last-child {
-  margin-top: var(--scale-600);     /* 24px de margem antes (respiro igual aos rows fechados) */
-  padding-bottom: var(--scale-500);  /* 20px */
+  margin-bottom: var(--scale-600);  /* 24px de margem DEPOIS do Ver todos */
 }
 
 

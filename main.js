@@ -91,6 +91,7 @@
     drawer.classList.remove('is-closing');
     drawer.classList.add('is-open');
     drawer.setAttribute('aria-hidden', 'false');
+    document.body.classList.add('drawer-open');
 
     menuBtn.classList.add('is-open');
     menuBtn.setAttribute('aria-expanded', 'true');
@@ -103,6 +104,7 @@
 
     drawer.classList.remove('is-open');
     drawer.classList.add('is-closing');
+    document.body.classList.remove('drawer-open');
 
     menuBtn.classList.remove('is-open');
     menuBtn.setAttribute('aria-expanded', 'false');
