@@ -783,10 +783,11 @@ body {
   animation-duration: 400ms, 300ms;
   animation-timing-function: cubic-bezier(0.55, 0, 1, 0.3), ease-in;
   animation-fill-mode: forwards, forwards;
-  /* max-width colapsa de cara; opacity segura em 1 por 100ms, depois cai até 0 junto com o colapso */
+  /* Cascata REVERSA (do último char pro primeiro) — acompanha o colapso visual,
+     que comprime a palavra pra esquerda. Char da direita some primeiro. */
   animation-delay:
-    calc(var(--char-i, 0) * 30ms),
-    calc(var(--char-i, 0) * 30ms + 100ms);
+    calc((var(--char-count, 1) - 1 - var(--char-i, 0)) * 30ms),
+    calc((var(--char-count, 1) - 1 - var(--char-i, 0)) * 30ms + 100ms);
 }
 
 @keyframes hero-char-expand-width {

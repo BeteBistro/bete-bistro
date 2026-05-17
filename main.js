@@ -56,12 +56,22 @@
     }
   }
 
+  /* Threshold de 100px (não 10) pra que a animação de expand TERMINE perto do topo,
+     não COMECE no topo. Em rolagem normal, dá tempo de completar a cascata. */
+  var collapseThreshold = 100;
+  var expandTimer = null;
+
   function updateHeader() {
-    var scrolled = window.scrollY > 10;
+    var scrolled = window.scrollY > collapseThreshold;
     var narrow   = window.innerWidth <= 1200;
     var shouldCollapse = narrow || scrolled;
 
     if (shouldCollapse && !isCollapsed) {
+      // Se há um expand pendente (timer), cancela antes
+      if (expandTimer) {
+        clearTimeout(expandTimer);
+        expandTimer = null;
+      }
       isCollapsed = true;
       header.classList.add('is-collapsed');
       setTimeout(showBtn, 270);
@@ -70,7 +80,11 @@
       // Se a gaveta tiver aberta, fecha junto
       if (drawer.classList.contains('is-open')) closeDrawer();
       hideBtn();
-      header.classList.remove('is-collapsed');
+      // Expand começa quando ícone está ~50% sumido (135ms = metade dos 270ms de disappear)
+      expandTimer = setTimeout(function () {
+        expandTimer = null;
+        header.classList.remove('is-collapsed');
+      }, 135);
     }
   }
 
@@ -255,6 +269,8 @@
     if (!rotatorEl) return;
     rotatorEl.innerHTML = '';
     var chars = word.split('');
+    // --char-count fica no rotator e é herdado pelos chars filhos (pra CSS calcular cascata reversa)
+    rotatorEl.style.setProperty('--char-count', chars.length);
     for (var i = 0; i < chars.length; i++) {
       var span = document.createElement('span');
       span.className = 'hero__title-char';
