@@ -80,7 +80,7 @@
   /* Drawer */
   --drawer-radius:   var(--border-radius-large);   /* 8px */
   --drawer-gap:      var(--scale-600);              /* 24px — respiro entre botão e drawer */
-  --drawer-padding:  var(--scale-600);              /* 24px */
+  --drawer-padding:  var(--scale-800);              /* 32px (era 24px) */
 }
 
 
@@ -206,12 +206,12 @@ body {
   margin-left: 0;
 }
 
-/* Stagger expand pra margin-left */
-.header__nav-item:nth-child(1) { transition-delay: 0.25s; }
-.header__nav-item:nth-child(2) { transition-delay: 0.30s; }
-.header__nav-item:nth-child(3) { transition-delay: 0.35s; }
-.header__nav-item:nth-child(4) { transition-delay: 0.40s; }
-.header__nav-item:nth-child(5) { transition-delay: 0.45s; }
+/* Stagger expand pra margin-left — pequeno pra ser quase simultâneo */
+.header__nav-item:nth-child(1) { transition-delay: 0s; }
+.header__nav-item:nth-child(2) { transition-delay: 0.05s; }
+.header__nav-item:nth-child(3) { transition-delay: 0.1s; }
+.header__nav-item:nth-child(4) { transition-delay: 0.15s; }
+.header__nav-item:nth-child(5) { transition-delay: 0.2s; }
 
 .header__nav-link {
   font-family: var(--font-subtitulo);
@@ -223,25 +223,42 @@ body {
   white-space: nowrap;
   display: inline-block;
   overflow: hidden;
-  padding-top: 6px;   /* respiro pros acentos dentro do overflow */
+  padding-top: 6px;
   max-width: 300px;
   opacity: 1;
   transition:
     letter-spacing 0.45s cubic-bezier(0, 0.2, 0.35, 1),
     max-width 0.45s cubic-bezier(0, 0.2, 0.35, 1),
-    opacity 0.15s ease;
+    color 0.15s ease;
 }
 
 .header__nav-link:hover {
-  opacity: 0.75;
+  color: var(--color-laranja-300);
+}
+
+/* Chevron do nav expandido (só itens com filhas) */
+.header__nav-chevron {
+  width: 24px;
+  height: 24px;
+  margin-left: var(--scale-200);  /* 8px do texto */
+  vertical-align: middle;
+}
+
+.header__nav-chevron path {
+  stroke: currentColor;
+  stroke-width: 2px;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+  fill: none;
 }
 
 /* Stagger expand */
-.header__nav-item:nth-child(1) .header__nav-link { transition-delay: 0.25s, 0.25s, 0s; }
-.header__nav-item:nth-child(2) .header__nav-link { transition-delay: 0.30s, 0.30s, 0s; }
-.header__nav-item:nth-child(3) .header__nav-link { transition-delay: 0.35s, 0.35s, 0s; }
-.header__nav-item:nth-child(4) .header__nav-link { transition-delay: 0.40s, 0.40s, 0s; }
-.header__nav-item:nth-child(5) .header__nav-link { transition-delay: 0.45s, 0.45s, 0s; }
+.header__nav-item:nth-child(1) .header__nav-link { transition-delay: 0s, 0s, 0s; }
+.header__nav-item:nth-child(2) .header__nav-link { transition-delay: 0.05s, 0.05s, 0s; }
+.header__nav-item:nth-child(3) .header__nav-link { transition-delay: 0.1s, 0.1s, 0s; }
+.header__nav-item:nth-child(4) .header__nav-link { transition-delay: 0.15s, 0.15s, 0s; }
+.header__nav-item:nth-child(5) .header__nav-link { transition-delay: 0.2s, 0.2s, 0s; }
 
 /* Collapsed state — nav some letra por letra, esquerda → direita */
 .header.is-collapsed .header__nav-item {
@@ -263,14 +280,14 @@ body {
   transition:
     letter-spacing 0.4s cubic-bezier(0.55, 0, 1, 0.3),
     max-width 0.4s cubic-bezier(0.55, 0, 1, 0.3),
-    opacity 0.12s ease 0.28s;
+    opacity 0.3s ease 0.1s;
 }
 
-.header.is-collapsed .header__nav-item:nth-child(1) .header__nav-link { transition-delay: 0s, 0s, 0.28s; }
-.header.is-collapsed .header__nav-item:nth-child(2) .header__nav-link { transition-delay: 0.05s, 0.05s, 0.33s; }
-.header.is-collapsed .header__nav-item:nth-child(3) .header__nav-link { transition-delay: 0.1s, 0.1s, 0.38s; }
-.header.is-collapsed .header__nav-item:nth-child(4) .header__nav-link { transition-delay: 0.15s, 0.15s, 0.43s; }
-.header.is-collapsed .header__nav-item:nth-child(5) .header__nav-link { transition-delay: 0.2s, 0.2s, 0.48s; }
+.header.is-collapsed .header__nav-item:nth-child(1) .header__nav-link { transition-delay: 0s, 0s, 0.1s; }
+.header.is-collapsed .header__nav-item:nth-child(2) .header__nav-link { transition-delay: 0.05s, 0.05s, 0.15s; }
+.header.is-collapsed .header__nav-item:nth-child(3) .header__nav-link { transition-delay: 0.1s, 0.1s, 0.2s; }
+.header.is-collapsed .header__nav-item:nth-child(4) .header__nav-link { transition-delay: 0.15s, 0.15s, 0.25s; }
+.header.is-collapsed .header__nav-item:nth-child(5) .header__nav-link { transition-delay: 0.2s, 0.2s, 0.3s; }
 
 
 /* ----- Dropdown no hover (nav expandido com filhas) ----- */
@@ -279,7 +296,7 @@ body {
   top: 100%;
   left: 0;
   margin-top: var(--scale-300);  /* 12px de respiro */
-  min-width: 220px;
+  width: max-content;            /* largura pelo maior item */
   background: var(--color-marfim-500);
   border-radius: var(--border-radius-large);
   padding: var(--scale-300) 0;
@@ -307,16 +324,16 @@ body {
 
 .header__dropdown a {
   display: block;
-  padding: var(--scale-200) var(--scale-500);  /* 8px 20px */
+  padding: var(--scale-300) var(--scale-600);   /* 12px 24px (era 8px 20px) */
   font-family: var(--font-body);
   font-size: 16px;
   color: var(--color-cinza-500);
   white-space: nowrap;
-  transition: opacity 0.15s ease;
+  transition: color 0.15s ease;
 }
 
 .header__dropdown a:hover {
-  opacity: 0.7;
+  color: var(--color-laranja-300);
 }
 
 /* Dropdowns escondidos no estado collapsed (já tem a gaveta) */
@@ -353,11 +370,13 @@ body {
   transform: scale(1);
 }
 
-.menu-btn.is-visible:hover {
+.menu-btn.is-visible:hover,
+.menu-btn.is-visible.is-open:hover {
   transform: scale(1.06);
 }
 
-.menu-btn.is-visible:active {
+.menu-btn.is-visible:active,
+.menu-btn.is-visible.is-open:active {
   transform: scale(0.96);
 }
 
@@ -458,12 +477,13 @@ body {
   position: absolute;
   top: calc((var(--logo-size) - var(--icon-size)) / 2 + var(--icon-size) + var(--drawer-gap));
   right: var(--header-padding);
-  width: 312px;
+  width: max-content;
+  max-width: calc(100vw - var(--header-padding) * 2);
   max-height: calc(100vh - 100px);
   overflow-y: auto;
   background: var(--color-marfim-500);
   border-radius: var(--drawer-radius);
-  padding: var(--scale-300) 0;  /* 12px vertical, sem horizontal — fica no row */
+  padding: var(--scale-400) 0;  /* 16px vertical (era 12px) */
   opacity: 0;
   visibility: hidden;
   transform: scale(0);
@@ -506,7 +526,7 @@ body {
   position: relative;
 }
 
-/* Divisor entre itens (2px marrom-300) */
+/* Divisor entre itens (2px marrom-200) */
 .drawer__item + .drawer__item::before {
   content: '';
   position: absolute;
@@ -514,7 +534,7 @@ body {
   left: var(--drawer-padding);
   right: var(--drawer-padding);
   height: var(--border-width-small);  /* 2px */
-  background: var(--color-marrom-300);
+  background: var(--color-marrom-200);
 }
 
 /* Row — clicável tanto pra <button> (parent) quanto pra <a> (sem filhas) */
@@ -523,14 +543,15 @@ body {
   align-items: center;
   justify-content: space-between;
   width: 100%;
-  padding: var(--scale-400) var(--drawer-padding);  /* 16px 24px */
+  padding: var(--scale-600) var(--drawer-padding);  /* 24px vertical, 32px horizontal */
   text-align: left;
   cursor: pointer;
-  transition: opacity 0.15s ease;
+  color: var(--color-cinza-500);
+  transition: color 0.15s ease;
 }
 
 .drawer__row:hover {
-  opacity: 0.75;
+  color: var(--color-laranja-300);
 }
 
 .drawer__label {
@@ -539,8 +560,8 @@ body {
   font-size: 14px;            /* S5 */
   letter-spacing: 0.02em;
   text-transform: uppercase;
-  color: var(--color-cinza-500);
-  padding-top: 6px;            /* respiro pros acentos */
+  color: inherit;              /* herda do row pra mudar no hover */
+  padding-top: 6px;
   display: inline-block;
 }
 
@@ -585,35 +606,35 @@ body {
 
 .drawer__sublink {
   display: block;
-  padding: var(--scale-300) var(--drawer-padding);  /* 12px 24px */
-  padding-left: calc(var(--drawer-padding) + var(--scale-400));  /* indent extra 16px */
+  padding: var(--scale-400) var(--drawer-padding);              /* 16px 32px (era 12px 24px) */
+  padding-left: calc(var(--drawer-padding) + var(--scale-600)); /* indent +24px (era +16px) */
   font-family: var(--font-body);
   font-size: 16px;
   font-weight: 400;
   color: var(--color-cinza-500);
-  transition: opacity 0.15s ease;
+  transition: color 0.15s ease;
 }
 
 .drawer__sublink:hover {
-  opacity: 0.7;
+  color: var(--color-laranja-300);
 }
 
 .drawer__sublink--all {
   font-weight: 600;
 }
 
-/* Espaço antes do primeiro sublink e depois do último */
+/* Espaço extra no início e fim do submenu */
 .drawer__submenu-inner > .drawer__sublink:first-child {
-  padding-top: var(--scale-200);  /* 8px */
+  padding-top: var(--scale-300);  /* 12px (era 8px) */
 }
 
 .drawer__submenu-inner > .drawer__sublink:last-child {
-  padding-bottom: var(--scale-400);  /* 16px */
+  padding-bottom: var(--scale-600);  /* 24px (era 16px) */
 }
 
 
 /* ============================================================
-   DRAWER — MOBILE (modal de tela cheia)
+   DRAWER — MOBILE (modal)
    ============================================================ */
 @media (max-width: 768px) {
   .drawer__overlay {
@@ -630,28 +651,15 @@ body {
   }
 
   .drawer__panel {
-    /* Cobre a tela menos as margens (mesma do header) */
-    top: var(--header-padding);
+    /* Posicionado abaixo do botão, com margens iguais às do header */
+    top: calc((var(--logo-size) - var(--icon-size)) / 2 + var(--icon-size) + var(--drawer-gap));
     right: var(--header-padding);
-    bottom: var(--header-padding);
     left: var(--header-padding);
+    bottom: auto;
     width: auto;
-    max-height: none;
-    padding: var(--scale-1600) var(--scale-200) var(--scale-600);  /* 64px topo (espaço pro botão) */
-  }
-
-  .drawer__row {
-    padding: var(--scale-500) var(--scale-500);  /* 20px */
-  }
-
-  .drawer__item + .drawer__item::before {
-    left: var(--scale-500);
-    right: var(--scale-500);
-  }
-
-  .drawer__sublink {
-    padding-left: calc(var(--scale-500) + var(--scale-400));
-    padding-right: var(--scale-500);
+    max-width: none;
+    max-height: calc(100vh - ((var(--logo-size) - var(--icon-size)) / 2 + var(--icon-size) + var(--drawer-gap)) - var(--header-padding));
+    padding: var(--scale-400) 0;
   }
 }
 
