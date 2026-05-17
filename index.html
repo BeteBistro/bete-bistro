@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bete Bistrô</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<!-- Header -->
+<header class="header" id="header">
+  <a href="/" class="header__logo" aria-label="Bete Bistrô — Página inicial">
+    <img src="assets/svg/logo.svg" alt="Bete Bistrô" width="120" height="120">
+  </a>
+
+  <nav class="header__nav" id="nav" aria-label="Navegação principal">
+    <a href="/cesta-cafe-colonial">CESTA COLONIAL</a>
+    <a href="/cesta-sazonal">SAZONAL</a>
+    <a href="/cafes-e-chocolates">CAFÉS E CHOCOLATES</a>
+    <a href="/frescos-e-congelados">FRESCOS E CONGELADOS</a>
+    <a href="/sobre">SOBRE NÓS</a>
+  </nav>
+
+  <button class="header__menu-btn" id="menuBtn" aria-label="Abrir menu" aria-expanded="false">
+    <svg viewBox="0 0 72 72" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect width="72" height="72" rx="36" fill="#FCE4CC"/>
+      <path d="M22.5 36H49.5M22.5 27H49.5M22.5 45H49.5" stroke="#E95A2A" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+  </button>
+</header>
+
+<!-- Hero (placeholder — conteúdo real vem depois) -->
+<section class="hero" id="hero">
+  <p class="hero__placeholder">[ Hero — conteúdo será construído na próxima etapa ]</p>
+
+  <div class="hero__ondinha">
+    <picture>
+      <source srcset="assets/svg/ondinha-mobile.svg" media="(max-width: 480px)">
+      <source srcset="assets/svg/ondinha-tablet.svg" media="(max-width: 1024px)">
+      <img src="assets/svg/ondinha-desktop.svg" alt="" role="presentation">
+    </picture>
+  </div>
+</section>
+
+<!-- Placeholder pra gerar scroll (remover quando tiver conteúdo) -->
+<section class="placeholder-section">
+  [ Próxima seção ]
+</section>
+
+<script src="main.js"></script>
+</body>
+</html>
