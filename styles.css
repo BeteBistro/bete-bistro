@@ -811,10 +811,11 @@ body {
 }
 
 /* --- Entrada: desempilha da última pra primeira.
-   Delay inclui --scale-dur pra chars só moverem depois do scaleX terminar. --- */
+   Delay inclui --scale-offset (< scaleDur) pra chars começarem ANTES do scale terminar,
+   criando overlap e continuidade de velocidade. --- */
 .hero__title-char:not(.is-leaving) {
   animation: hero-char-unstack 400ms var(--ease-entrada) backwards;
-  animation-delay: calc(var(--scale-dur, 180ms) + (var(--char-count, 1) - 1 - var(--char-i, 0)) * 30ms);
+  animation-delay: calc(var(--scale-offset, 108ms) + (var(--char-count, 1) - 1 - var(--char-i, 0)) * 30ms);
 }
 
 /* --- Saída: empilha da última pra primeira (mesma ordem). Sem delay extra. --- */

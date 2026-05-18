@@ -306,6 +306,8 @@
   var animOutMs   = 350;              // duração da animação de saída por char
   var animInMs    = 400;              // duração da animação de entrada por char
   var scaleDur    = 180;              // duração do scaleX + opacity no container
+  var overlapMs   = Math.round(scaleDur * 0.4);  // 40% de sobreposição scale↔chars
+  var scaleOffset = scaleDur - overlapMs;         // chars começam antes do scale terminar
 
   // Fallback caso o vídeo não carregue metadata: 1s display por palavra
   var displayTimes = palavras.map(function () { return 1000; });
@@ -314,8 +316,8 @@
     var timePerWord = videoDurationMs / palavras.length;
     return palavras.map(function (word) {
       var n = word.length;
-      // Tempo total = scaleIn + unstack + stack + scaleOut
-      var animTime = scaleDur * 2 + animInMs + animOutMs + (n - 1) * charDelay * 2;
+      // Tempo total = scaleIn(com overlap) + unstack + stack + scaleOut(com overlap)
+      var animTime = scaleOffset * 2 + animInMs + animOutMs + (n - 1) * charDelay * 2;
       return Math.max(300, timePerWord - animTime);
     });
   }
@@ -341,6 +343,7 @@
     var chars = word.split('');
     rotatorEl.style.setProperty('--char-count', chars.length);
     rotatorEl.style.setProperty('--scale-dur', scaleDur + 'ms');
+    rotatorEl.style.setProperty('--scale-offset', scaleOffset + 'ms');
 
     var spans = [];
     for (var i = 0; i < chars.length; i++) {
@@ -378,20 +381,21 @@
     // Tempo total do empilhamento dos chars
     var totalStack = animOutMs + ((chars.length - 1) * charDelay);
 
-    // Depois que chars terminam de empilhar: scaleX 1→0 + opacity 1→0
+    // Scale começa ANTES do empilhamento terminar (overlap = overlapMs).
+    // Isso mantém velocidade contínua entre empilhamento e scale.
     window.setTimeout(function () {
       rotatorEl.classList.add('is-scaling-out');
-    }, totalStack);
+    }, totalStack - overlapMs);
 
-    // Troca a palavra depois do empilhamento + scaleOut
+    // Troca a palavra: empilhamento + scale (descontando overlap)
     window.setTimeout(function () {
       rotatorIdx = (rotatorIdx + 1) % palavras.length;
       splitWordToChars(palavras[rotatorIdx]);
-      // Próximo tick: scaleIn + unstack + display
+      // Próximo tick: scaleIn(com overlap) + unstack + display
       var n = palavras[rotatorIdx].length;
-      var nextDelay = displayTimes[rotatorIdx] + scaleDur + animInMs + ((n - 1) * charDelay);
+      var nextDelay = displayTimes[rotatorIdx] + scaleOffset + animInMs + ((n - 1) * charDelay);
       window.setTimeout(rotatorTick, nextDelay);
-    }, totalStack + scaleDur);
+    }, totalStack + scaleOffset);
   }
 
   // Inicia o rotator junto com o vídeo
@@ -401,7 +405,7 @@
     rotatorStarted = true;
     splitWordToChars(palavras[0]);
     var n = palavras[0].length;
-    var firstDelay = displayTimes[0] + scaleDur + animInMs + ((n - 1) * charDelay);
+    var firstDelay = displayTimes[0] + scaleOffset + animInMs + ((n - 1) * charDelay);
     window.setTimeout(rotatorTick, firstDelay);
   }
 
