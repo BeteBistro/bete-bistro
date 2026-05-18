@@ -359,9 +359,10 @@
       spans[j].style.setProperty('--char-stack-x', (-dx) + 'px');
     }
 
-    // Fade in: opacidade sobe de 0→1 enquanto as primeiras metade das letras desempilham.
-    // Duração = tempo pra metade dos chars começarem a mover.
-    var fadeDur = Math.max(120, Math.floor(chars.length / 2) * charDelay);
+    // Fade in: opacidade sobe de 0→1 ao longo de 60% do tempo total do desempilhamento.
+    // Metade das letras já se separou visivelmente quando a opacidade chega a 100%.
+    var totalIn = animInMs + ((chars.length - 1) * charDelay);
+    var fadeDur = Math.round(totalIn * 0.6);
 
     // Força reflow pra opacity:0 pintar antes da transição
     rotatorEl.offsetHeight;
@@ -381,8 +382,10 @@
     // Tempo total de saída = duração + cascata do último char
     var totalOut = animOutMs + ((chars.length - 1) * charDelay);
 
-    // Fade out: opacidade cai de 1→0 enquanto metade das letras empilham.
-    var fadeDur = Math.max(120, Math.floor(chars.length / 2) * charDelay);
+    // Fade out: opacidade cai de 1→0 ao longo de 60% do tempo total do empilhamento.
+    // Metade das letras já empilhou quando a opacidade chega a 0%.
+    // Resto do empilhamento acontece invisível.
+    var fadeDur = Math.round(totalOut * 0.6);
     rotatorEl.style.transition = 'opacity ' + fadeDur + 'ms linear';
     rotatorEl.style.opacity = '0';
 
