@@ -775,16 +775,34 @@ body {
    - Entrada: todas as letras empilhadas em x=0, se desempilham da última pra primeira,
      arrastando pra direita até suas posições naturais. Opacity flat (0→1 no container).
    - Saída: letras se empilham de volta, da última pra primeira.
-     Opacity flat (1→0 no container, no fim).
-   --char-stack-x é calculado no JS via offsetLeft de cada char. */
+     Opacity + scaleX sincronizados no container. transform-origin: left.
+   --char-stack-x é calculado no JS via offsetLeft de cada char.
+   --scale-dur é a duração da animação de escala (setada no JS). */
 .hero__title-rotator {
   display: inline-block;
   white-space: nowrap;
+  transform-origin: left center;
 }
 
-/* Opacidade do container controlada via JS (transition, não animation).
-   JS seta opacity e transition-duration nos momentos certos.
-   Não usar keyframes pra isso — os timings dependem do nº de chars. */
+/* Entrada do container: scaleX 0→1 + opacity 0→1. Termina ANTES dos chars desempilharem. */
+.hero__title-rotator.is-scaling-in {
+  animation: rotator-scale-in var(--scale-dur, 180ms) linear both;
+}
+
+/* Saída do container: scaleX 1→0 + opacity 1→0. Começa DEPOIS dos chars empilharem. */
+.hero__title-rotator.is-scaling-out {
+  animation: rotator-scale-out var(--scale-dur, 180ms) linear forwards;
+}
+
+@keyframes rotator-scale-in {
+  from { transform: scaleX(0); opacity: 0; }
+  to   { transform: scaleX(1); opacity: 1; }
+}
+
+@keyframes rotator-scale-out {
+  from { transform: scaleX(1); opacity: 1; }
+  to   { transform: scaleX(0); opacity: 0; }
+}
 
 .hero__title-char {
   display: inline-block;
@@ -792,13 +810,14 @@ body {
   vertical-align: baseline;
 }
 
-/* --- Entrada: desempilha da última pra primeira (última = delay 0) --- */
+/* --- Entrada: desempilha da última pra primeira.
+   Delay inclui --scale-dur pra chars só moverem depois do scaleX terminar. --- */
 .hero__title-char:not(.is-leaving) {
   animation: hero-char-unstack 400ms var(--ease-entrada) backwards;
-  animation-delay: calc((var(--char-count, 1) - 1 - var(--char-i, 0)) * 30ms);
+  animation-delay: calc(var(--scale-dur, 180ms) + (var(--char-count, 1) - 1 - var(--char-i, 0)) * 30ms);
 }
 
-/* --- Saída: empilha da última pra primeira (mesma ordem) --- */
+/* --- Saída: empilha da última pra primeira (mesma ordem). Sem delay extra. --- */
 .hero__title-char.is-leaving {
   animation: hero-char-stack 350ms var(--ease-saida) forwards;
   animation-delay: calc((var(--char-count, 1) - 1 - var(--char-i, 0)) * 30ms);
@@ -819,9 +838,13 @@ body {
   .hero__title-char.is-leaving {
     animation: none;
   }
+  .hero__title-rotator.is-scaling-in,
+  .hero__title-rotator.is-scaling-out {
+    animation: none;
+  }
   .hero__title-rotator {
     opacity: 1 !important;
-    transition: none !important;
+    transform: none !important;
   }
 }
 

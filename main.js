@@ -305,6 +305,7 @@
   var charDelay   = 30;               // ms entre cascata de cada char
   var animOutMs   = 350;              // duração da animação de saída por char
   var animInMs    = 400;              // duração da animação de entrada por char
+  var scaleDur    = 180;              // duração do scaleX + opacity no container
 
   // Fallback caso o vídeo não carregue metadata: 1s display por palavra
   var displayTimes = palavras.map(function () { return 1000; });
@@ -313,8 +314,9 @@
     var timePerWord = videoDurationMs / palavras.length;
     return palavras.map(function (word) {
       var n = word.length;
-      var animTime = animInMs + animOutMs + (n - 1) * charDelay * 2;
-      return Math.max(300, timePerWord - animTime); // min 300ms pra dar pra ler
+      // Tempo total = scaleIn + unstack + stack + scaleOut
+      var animTime = scaleDur * 2 + animInMs + animOutMs + (n - 1) * charDelay * 2;
+      return Math.max(300, timePerWord - animTime);
     });
   }
 
@@ -332,15 +334,13 @@
 
   function splitWordToChars(word) {
     if (!rotatorEl) return;
+    // Reset: remove classes e inline styles
     rotatorEl.className = 'hero__title-rotator';
-
-    // Opacity 0 instantâneo (sem transição) antes de reconstruir
-    rotatorEl.style.transition = 'none';
-    rotatorEl.style.opacity = '0';
-
+    rotatorEl.removeAttribute('style');
     rotatorEl.innerHTML = '';
     var chars = word.split('');
     rotatorEl.style.setProperty('--char-count', chars.length);
+    rotatorEl.style.setProperty('--scale-dur', scaleDur + 'ms');
 
     var spans = [];
     for (var i = 0; i < chars.length; i++) {
@@ -359,54 +359,49 @@
       spans[j].style.setProperty('--char-stack-x', (-dx) + 'px');
     }
 
-    // Fade in: opacidade sobe de 0→1 ao longo de 60% do tempo total do desempilhamento.
-    // Metade das letras já se separou visivelmente quando a opacidade chega a 100%.
-    var totalIn = animInMs + ((chars.length - 1) * charDelay);
-    var fadeDur = Math.round(totalIn * 0.6);
-
-    // Força reflow pra opacity:0 pintar antes da transição
-    rotatorEl.offsetHeight;
-    rotatorEl.style.transition = 'opacity ' + fadeDur + 'ms linear';
-    rotatorEl.style.opacity = '1';
+    // ScaleX 0→1 + opacity 0→1. Chars ficam parados (delay inclui scaleDur no CSS).
+    rotatorEl.classList.add('is-scaling-in');
   }
 
   function rotatorTick() {
     if (!rotatorEl) return;
     var chars = rotatorEl.querySelectorAll('.hero__title-char');
 
+    // Remove scale-in (default: opacity 1, scaleX 1)
+    rotatorEl.classList.remove('is-scaling-in');
+
     // Aplica saída (empilhamento — cascata via --char-i no CSS)
     for (var i = 0; i < chars.length; i++) {
       chars[i].classList.add('is-leaving');
     }
 
-    // Tempo total de saída = duração + cascata do último char
-    var totalOut = animOutMs + ((chars.length - 1) * charDelay);
+    // Tempo total do empilhamento dos chars
+    var totalStack = animOutMs + ((chars.length - 1) * charDelay);
 
-    // Fade out: delay 25% (empilhamento visível antes do fade começar),
-    // duração 50% (opacidade chega em 0 a 75% do total — antes de empilhar por completo).
-    // Os 25% finais do empilhamento acontecem invisíveis.
-    var fadeDur = Math.round(totalOut * 0.5);
-    var fadeDelay = Math.round(totalOut * 0.25);
-    rotatorEl.style.transition = 'opacity ' + fadeDur + 'ms linear ' + fadeDelay + 'ms';
-    rotatorEl.style.opacity = '0';
+    // Depois que chars terminam de empilhar: scaleX 1→0 + opacity 1→0
+    window.setTimeout(function () {
+      rotatorEl.classList.add('is-scaling-out');
+    }, totalStack);
 
-    // Troca a palavra quando a saída termina
+    // Troca a palavra depois do empilhamento + scaleOut
     window.setTimeout(function () {
       rotatorIdx = (rotatorIdx + 1) % palavras.length;
       splitWordToChars(palavras[rotatorIdx]);
-      // Próximo tick depois de display (variável por palavra) + cascata de entrada
-      var nextDelay = displayTimes[rotatorIdx] + animInMs + ((palavras[rotatorIdx].length - 1) * charDelay);
+      // Próximo tick: scaleIn + unstack + display
+      var n = palavras[rotatorIdx].length;
+      var nextDelay = displayTimes[rotatorIdx] + scaleDur + animInMs + ((n - 1) * charDelay);
       window.setTimeout(rotatorTick, nextDelay);
-    }, totalOut);
+    }, totalStack + scaleDur);
   }
 
-  // Inicia o rotator junto com o vídeo (ou imediatamente se vídeo já está tocando)
+  // Inicia o rotator junto com o vídeo
   var rotatorStarted = false;
   function startRotator() {
     if (rotatorStarted || !rotatorEl || prefersReducedMotion) return;
     rotatorStarted = true;
     splitWordToChars(palavras[0]);
-    var firstDelay = displayTimes[0] + animInMs + ((palavras[0].length - 1) * charDelay);
+    var n = palavras[0].length;
+    var firstDelay = displayTimes[0] + scaleDur + animInMs + ((n - 1) * charDelay);
     window.setTimeout(rotatorTick, firstDelay);
   }
 
