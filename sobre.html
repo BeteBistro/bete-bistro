@@ -3,18 +3,16 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Bete Bistrô</title>
+  <title>Sobre Nós — Bete Bistrô</title>
   <link rel="stylesheet" href="tokens.css">
   <link rel="stylesheet" href="styles.css">
 </head>
-<body data-page="home">
+<body>
 
 <!-- ============================================================
-     HEADER
+     HEADER (idêntico à home)
      ============================================================ -->
 <header class="header is-collapsed" id="header">
-
-  <!-- Logo (3 peças pra animação de entrada na home) -->
   <a href="/" class="header__logo" aria-label="Bete Bistrô — Página inicial">
     <div class="logo-anim" id="logoAnim">
       <div class="logo-anim__piece logo-anim__rect"></div>
@@ -23,15 +21,10 @@
     </div>
   </a>
 
-  <!-- Nav expandido (desktop largo) -->
   <nav class="header__nav" id="nav" aria-label="Navegação principal">
-
     <div class="header__nav-item header__nav-item--has-children">
-      <a href="/cesta-colonial" class="header__nav-link">
-        Cesta Colonial
-        <svg class="header__nav-chevron" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-          <path d="M6 9L12 15L18 9" />
-        </svg>
+      <a href="/cesta-colonial" class="header__nav-link">Cesta Colonial
+        <svg class="header__nav-chevron" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 9L12 15L18 9" /></svg>
       </a>
       <div class="header__dropdown" role="menu" aria-label="Subitens de Cesta Colonial">
         <a href="/cesta-afeto" role="menuitem">Cesta Afeto</a>
@@ -39,44 +32,32 @@
         <a href="/cesta-carinho" role="menuitem">Cesta Carinho</a>
       </div>
     </div>
-
     <div class="header__nav-item header__nav-item--has-children">
-      <a href="/sazonais" class="header__nav-link">
-        Sazonais
-        <svg class="header__nav-chevron" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-          <path d="M6 9L12 15L18 9" />
-        </svg>
+      <a href="/sazonais" class="header__nav-link">Sazonais
+        <svg class="header__nav-chevron" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 9L12 15L18 9" /></svg>
       </a>
       <div class="header__dropdown" role="menu" aria-label="Subitens de Sazonais">
         <a href="/cesta-inverno" role="menuitem">Cesta Inverno</a>
         <a href="/cesta-junina" role="menuitem">Cesta Junina</a>
       </div>
     </div>
-
     <div class="header__nav-item header__nav-item--has-children">
-      <a href="/frescos-e-congelados" class="header__nav-link">
-        Frescos e Congelados
-        <svg class="header__nav-chevron" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-          <path d="M6 9L12 15L18 9" />
-        </svg>
+      <a href="/frescos-e-congelados" class="header__nav-link">Frescos e Congelados
+        <svg class="header__nav-chevron" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 9L12 15L18 9" /></svg>
       </a>
       <div class="header__dropdown" role="menu" aria-label="Subitens de Frescos e Congelados">
         <a href="/doces-bolos-tortas" role="menuitem">Doces, bolos e tortas</a>
         <a href="/paes-salgados" role="menuitem">Pães e Salgados</a>
       </div>
     </div>
-
     <div class="header__nav-item">
       <a href="/cafes-e-chocolates" class="header__nav-link">Cafés e Chocolates</a>
     </div>
-
     <div class="header__nav-item">
       <a href="/sobre" class="header__nav-link">Sobre Nós</a>
     </div>
-
   </nav>
 
-  <!-- Botão menu (hamburguer/X) -->
   <button class="menu-btn is-visible" id="menuBtn" aria-label="Abrir menu" aria-expanded="false" aria-controls="drawer">
     <span class="menu-btn__bg" aria-hidden="true"></span>
     <svg class="menu-btn__icon icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
@@ -85,11 +66,8 @@
       <line class="menu-btn__line menu-btn__line--bottom" x1="3" y1="18" x2="21" y2="18" />
     </svg>
   </button>
-
 </header>
 
-<!-- Síncrono: remove o estado collapsed default em desktop top, antes do primeiro paint.
-     Em mobile/tablet/scrolled, mantém o estado collapsed (que é o default no HTML). -->
 <script>
   if (window.innerWidth > 1200 && window.scrollY <= 100) {
     document.getElementById('header').classList.remove('is-collapsed');
@@ -97,22 +75,14 @@
   }
 </script>
 
-
-<!-- ============================================================
-     DRAWER (gaveta do menu)
-     ============================================================ -->
 <div class="drawer" id="drawer" aria-hidden="true">
   <div class="drawer__overlay" aria-hidden="true"></div>
-
   <nav class="drawer__panel" aria-label="Menu principal" role="navigation">
     <ul class="drawer__list">
-
       <li class="drawer__item drawer__item--has-children">
         <button class="drawer__row" aria-expanded="false" aria-controls="sub-cesta-colonial">
           <span class="drawer__label">Cesta Colonial</span>
-          <svg class="drawer__chevron icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-            <path d="M6 9L12 15L18 9" stroke-linecap="round" stroke-linejoin="round" />
-          </svg>
+          <svg class="drawer__chevron icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 9L12 15L18 9" stroke-linecap="round" stroke-linejoin="round" /></svg>
         </button>
         <div class="drawer__submenu" id="sub-cesta-colonial">
           <div class="drawer__submenu-inner">
@@ -123,13 +93,10 @@
           </div>
         </div>
       </li>
-
       <li class="drawer__item drawer__item--has-children">
         <button class="drawer__row" aria-expanded="false" aria-controls="sub-sazonais">
           <span class="drawer__label">Sazonais</span>
-          <svg class="drawer__chevron icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-            <path d="M6 9L12 15L18 9" stroke-linecap="round" stroke-linejoin="round" />
-          </svg>
+          <svg class="drawer__chevron icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 9L12 15L18 9" stroke-linecap="round" stroke-linejoin="round" /></svg>
         </button>
         <div class="drawer__submenu" id="sub-sazonais">
           <div class="drawer__submenu-inner">
@@ -139,13 +106,10 @@
           </div>
         </div>
       </li>
-
       <li class="drawer__item drawer__item--has-children">
         <button class="drawer__row" aria-expanded="false" aria-controls="sub-frescos">
           <span class="drawer__label">Frescos e Congelados</span>
-          <svg class="drawer__chevron icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-            <path d="M6 9L12 15L18 9" stroke-linecap="round" stroke-linejoin="round" />
-          </svg>
+          <svg class="drawer__chevron icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 9L12 15L18 9" stroke-linecap="round" stroke-linejoin="round" /></svg>
         </button>
         <div class="drawer__submenu" id="sub-frescos">
           <div class="drawer__submenu-inner">
@@ -155,72 +119,24 @@
           </div>
         </div>
       </li>
-
       <li class="drawer__item">
         <a href="/cafes-e-chocolates" class="drawer__row drawer__row--link">
           <span class="drawer__label">Cafés e Chocolates</span>
         </a>
       </li>
-
       <li class="drawer__item">
         <a href="/sobre" class="drawer__row drawer__row--link">
           <span class="drawer__label">Sobre Nós</span>
         </a>
       </li>
-
     </ul>
   </nav>
 </div>
 
-
 <!-- ============================================================
-     HERO
+     CONTEÚDO (placeholder — só fundo laranja pra testar)
      ============================================================ -->
-<section class="hero" id="hero">
-
-  <h1 class="hero__title">
-    Comida<br>
-    <span class="hero__title-rotator" aria-live="polite">Artesanal</span>
-  </h1>
-
-  <div class="hero__video-shape">
-    <video
-      class="hero__video"
-      autoplay
-      muted
-      loop
-      playsinline
-      preload="auto"
-      poster="assets/img/hero-fallback.png"
-      aria-hidden="true">
-      <source src="assets/video/hero.webm" type="video/webm">
-      <source src="assets/video/hero.mp4" type="video/mp4">
-    </video>
-  </div>
-
-  <a href="#fazer-pedido" class="btn-primary hero__cta">Fazer pedido</a>
-
-  <div class="hero__ondinha" aria-hidden="true"></div>
-
-</section>
-
-
-<!-- ============================================================
-     PRÓXIMA SEÇÃO (placeholder — substituir quando tiver conteúdo)
-     ============================================================ -->
-<section class="next-section">
-  [ Próxima seção — fundo marfim-300 ]
-</section>
-
-
-<!-- SVG escondido com o clip-path do shape do hero (referenciado pelo CSS) -->
-<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
-  <defs>
-    <clipPath id="hero-shape" clipPathUnits="objectBoundingBox">
-      <path d="M0.994 0.289 C1.036 0.540, 0.849 0.837, 0.576 0.953 C0.303 1.070, 0.048 0.961, 0.006 0.711 C-0.036 0.460, 0.151 0.163, 0.424 0.047 C0.696 -0.070, 0.952 0.039, 0.994 0.289 Z" />
-    </clipPath>
-  </defs>
-</svg>
+<section style="min-height: 100vh; background: var(--color-laranja-500); padding-top: var(--logo-size);"></section>
 
 <script src="main.js"></script>
 </body>

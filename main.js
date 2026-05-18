@@ -306,8 +306,7 @@
   var animOutMs   = 350;              // duração da animação de saída por char
   var animInMs    = 400;              // duração da animação de entrada por char
   var scaleDur    = 180;              // duração do scaleX + opacity no container
-  var overlapMs   = Math.round(scaleDur * 0.4);  // 40% de sobreposição scale↔chars
-  var scaleOffset = scaleDur - overlapMs;         // chars começam antes do scale terminar
+  var scaleOffset = Math.round(scaleDur * 0.2);  // chars começam quando scale tá em ~20%
 
   // Fallback caso o vídeo não carregue metadata: 1s display por palavra
   var displayTimes = palavras.map(function () { return 1000; });
@@ -316,9 +315,10 @@
     var timePerWord = videoDurationMs / palavras.length;
     return palavras.map(function (word) {
       var n = word.length;
-      // Tempo total = scaleIn(com overlap) + unstack + stack + scaleOut(com overlap)
-      var animTime = scaleOffset * 2 + animInMs + animOutMs + (n - 1) * charDelay * 2;
-      return Math.max(300, timePerWord - animTime);
+      var totalStack = animOutMs + (n - 1) * charDelay;
+      var totalEntry = scaleOffset + animInMs + (n - 1) * charDelay;
+      var totalExit  = Math.max(totalStack, Math.round(totalStack * 0.35) + scaleDur);
+      return Math.max(300, timePerWord - totalEntry - totalExit);
     });
   }
 
@@ -381,21 +381,23 @@
     // Tempo total do empilhamento dos chars
     var totalStack = animOutMs + ((chars.length - 1) * charDelay);
 
-    // Scale começa ANTES do empilhamento terminar (overlap = overlapMs).
-    // Isso mantém velocidade contínua entre empilhamento e scale.
+    // Scale começa quando 35% do empilhamento já aconteceu.
+    // Os chars mais visíveis AINDA estão se movendo, a compressão se junta ao movimento.
+    // Sem gap de velocidade: quando os chars param, o scale já tem momento próprio.
+    var scaleStart = Math.round(totalStack * 0.35);
     window.setTimeout(function () {
       rotatorEl.classList.add('is-scaling-out');
-    }, totalStack - overlapMs);
+    }, scaleStart);
 
-    // Troca a palavra: empilhamento + scale (descontando overlap)
+    // Troca: o que terminar por último (stacking ou scale)
+    var totalExit = Math.max(totalStack, scaleStart + scaleDur);
     window.setTimeout(function () {
       rotatorIdx = (rotatorIdx + 1) % palavras.length;
       splitWordToChars(palavras[rotatorIdx]);
-      // Próximo tick: scaleIn(com overlap) + unstack + display
       var n = palavras[rotatorIdx].length;
       var nextDelay = displayTimes[rotatorIdx] + scaleOffset + animInMs + ((n - 1) * charDelay);
       window.setTimeout(rotatorTick, nextDelay);
-    }, totalStack + scaleOffset);
+    }, totalExit);
   }
 
   // Inicia o rotator junto com o vídeo
@@ -421,6 +423,61 @@
       setTimeout(startRotator, 800);
     } else {
       startRotator();
+    }
+  }
+
+  /* ============================================================
+     5. LOGO — Animação de entrada (só na home)
+
+     3 peças (rect → bete → bistrô) com squash-and-stretch escalonado.
+
+     Entrada: só na home (data-page="home").
+     Saída: click na logo em qualquer página → animação espelho → navega pra home.
+     ============================================================ */
+  var logoAnim = document.getElementById('logoAnim');
+  if (logoAnim) {
+    // Entrada: só na home
+    var isHome = document.body.getAttribute('data-page') === 'home';
+    if (isHome) {
+      logoAnim.classList.add('is-animating');
+      // Remove a classe depois da entrada terminar pra liberar o click
+      setTimeout(function () {
+        logoAnim.classList.remove('is-animating');
+      }, 980);
+    }
+
+    // Saída: click na logo → animação reversa → navega pra home
+    var logoLink = logoAnim.closest('a');
+    var logoExiting = false;
+
+    if (logoLink) {
+      logoLink.addEventListener('click', function (e) {
+        if (logoExiting) { e.preventDefault(); return; }
+        if (logoAnim.classList.contains('is-animating')) { e.preventDefault(); return; }
+
+        e.preventDefault();
+        logoExiting = true;
+
+        // Fecha a gaveta se tiver aberta
+        if (drawerOpen) closeDrawer();
+
+        // Colapsa a nav (sem mostrar o ícone depois)
+        if (!isCollapsed) {
+          isCollapsed = true;
+          header.classList.add('is-collapsed');
+        }
+        // Garante que o botão some com bounce (não instantâneo)
+        hideBtn();
+
+        // Logo: animação de saída
+        logoAnim.classList.remove('is-animating');
+        logoAnim.classList.add('is-exiting');
+
+        // Navega pra home depois da animação terminar
+        setTimeout(function () {
+          window.location.href = logoLink.href;
+        }, 980);
+      });
     }
   }
 

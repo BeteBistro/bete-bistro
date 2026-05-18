@@ -182,12 +182,77 @@ body {
     height 0.3s var(--ease-entrada);
 }
 
-.header__logo img {
+.header__logo > img {
   width: 100%;
   height: 100%;
   display: block;
+}
+
+/* ----- Logo animada (3 peças) ----- */
+.logo-anim {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.logo-anim__piece {
+  position: absolute;
   filter: drop-shadow(0 0 16px rgba(56, 18, 0, 0.20));   /* laranja-950 @ 20% */
 }
+
+.logo-anim__rect {
+  inset: 0;
+  background: var(--color-marfim-500);
+  border-radius: 0 0 6.67% 6.67%;
+}
+
+.logo-anim__bete {
+  top: 33.3%;
+  left: 25%;
+  width: 49.2%;
+  height: auto;
+}
+
+.logo-anim__bistro {
+  top: 53.3%;
+  left: 25.8%;
+  width: 48.3%;
+  height: auto;
+}
+
+/* Animação de entrada — só quando .is-animating (home page, via JS) */
+.logo-anim.is-animating .logo-anim__piece {
+  transform-origin: center top;
+  animation: logo-entrance 640ms linear both;
+}
+
+.logo-anim.is-animating .logo-anim__rect   { animation-delay: 0ms; }
+.logo-anim.is-animating .logo-anim__bete   { animation-delay: 180ms; }
+.logo-anim.is-animating .logo-anim__bistro { animation-delay: 340ms; }
+
+@keyframes logo-entrance {
+  0%   { transform: scaleX(1) scaleY(0);    opacity: 0; filter: blur(0px)   drop-shadow(0 0 0px rgba(56,18,0,0)); }
+  10%  { transform: scaleX(1) scaleY(0.15); opacity: 0.4; filter: blur(0.4px) drop-shadow(0 0 2px rgba(56,18,0,0.03)); }
+  38%  { transform: scaleX(1) scaleY(1);    opacity: 1; filter: blur(0.3px) drop-shadow(0 0 10px rgba(56,18,0,0.12)); }
+  48%  { transform: scaleX(1.2) scaleY(1);  opacity: 1; filter: blur(0.6px) drop-shadow(0 0 14px rgba(56,18,0,0.17)); }
+  56%  { transform: scaleX(1.4) scaleY(1);  opacity: 1; filter: blur(0.3px) drop-shadow(0 0 16px rgba(56,18,0,0.20)); }
+  66%  { transform: scaleX(1.1) scaleY(0.75); opacity: 1; filter: blur(0.4px) drop-shadow(0 0 16px rgba(56,18,0,0.20)); }
+  75%  { transform: scaleX(1) scaleY(0.6);  opacity: 1; filter: blur(0.2px) drop-shadow(0 0 16px rgba(56,18,0,0.20)); }
+  88%  { transform: scaleX(1.05) scaleY(1.05); opacity: 1; filter: blur(0px) drop-shadow(0 0 16px rgba(56,18,0,0.20)); }
+  100% { transform: scaleX(1) scaleY(1);    opacity: 1; filter: blur(0px)   drop-shadow(0 0 16px rgba(56,18,0,0.20)); }
+}
+
+/* Animação de saída — mesmos keyframes em reverse, stagger invertido (bistrô → bete → rect) */
+.logo-anim.is-exiting { pointer-events: none; }
+
+.logo-anim.is-exiting .logo-anim__piece {
+  transform-origin: center top;
+  animation: logo-entrance 640ms linear reverse both;
+}
+
+.logo-anim.is-exiting .logo-anim__bistro { animation-delay: 0ms; }
+.logo-anim.is-exiting .logo-anim__bete   { animation-delay: 180ms; }
+.logo-anim.is-exiting .logo-anim__rect   { animation-delay: 340ms; }
 
 /* Mobile: logo encolhe 12px quando a gaveta tá aberta */
 @media (max-width: 768px) {
