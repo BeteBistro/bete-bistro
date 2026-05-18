@@ -782,26 +782,9 @@ body {
   white-space: nowrap;
 }
 
-/* Fade in/out no container (não por char). Flat = linear, exceção à regra de pico.
-   Duração total = tempo do desempilhamento/empilhamento (--fade-total, setado no JS).
-   Percentuais nos keyframes controlam quando a opacidade muda. */
-.hero__title-rotator.is-entering {
-  animation: rotator-fade-in var(--fade-total, 500ms) linear both;
-}
-
-.hero__title-rotator.is-exiting {
-  animation: rotator-fade-out var(--fade-total, 500ms) linear forwards;
-}
-
-@keyframes rotator-fade-in {
-  0%, 5%   { opacity: 0; }
-  20%, 100% { opacity: 1; }
-}
-
-@keyframes rotator-fade-out {
-  0%, 80%   { opacity: 1; }
-  95%, 100% { opacity: 0; }
-}
+/* Opacidade do container controlada via JS (transition, não animation).
+   JS seta opacity e transition-duration nos momentos certos.
+   Não usar keyframes pra isso — os timings dependem do nº de chars. */
 
 .hero__title-char {
   display: inline-block;
@@ -836,12 +819,9 @@ body {
   .hero__title-char.is-leaving {
     animation: none;
   }
-  .hero__title-rotator.is-entering,
-  .hero__title-rotator.is-exiting {
-    animation: none;
-    opacity: 1;
-  }
-}
+  .hero__title-rotator {
+    opacity: 1 !important;
+    transition: none !important;
   }
 }
 

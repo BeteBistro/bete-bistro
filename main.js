@@ -332,7 +332,12 @@
 
   function splitWordToChars(word) {
     if (!rotatorEl) return;
-    rotatorEl.className = 'hero__title-rotator';   // reset classes
+    rotatorEl.className = 'hero__title-rotator';
+
+    // Opacity 0 instantâneo (sem transição) antes de reconstruir
+    rotatorEl.style.transition = 'none';
+    rotatorEl.style.opacity = '0';
+
     rotatorEl.innerHTML = '';
     var chars = word.split('');
     rotatorEl.style.setProperty('--char-count', chars.length);
@@ -354,18 +359,19 @@
       spans[j].style.setProperty('--char-stack-x', (-dx) + 'px');
     }
 
-    // Fade in: duração total = tempo do desempilhamento. Percentuais no CSS.
-    var totalIn = animInMs + ((chars.length - 1) * charDelay);
-    rotatorEl.style.setProperty('--fade-total', totalIn + 'ms');
-    rotatorEl.classList.add('is-entering');
+    // Fade in: opacidade sobe de 0→1 enquanto as primeiras metade das letras desempilham.
+    // Duração = tempo pra metade dos chars começarem a mover.
+    var fadeDur = Math.max(120, Math.floor(chars.length / 2) * charDelay);
+
+    // Força reflow pra opacity:0 pintar antes da transição
+    rotatorEl.offsetHeight;
+    rotatorEl.style.transition = 'opacity ' + fadeDur + 'ms linear';
+    rotatorEl.style.opacity = '1';
   }
 
   function rotatorTick() {
     if (!rotatorEl) return;
     var chars = rotatorEl.querySelectorAll('.hero__title-char');
-
-    // Remove o fade-in que já terminou
-    rotatorEl.classList.remove('is-entering');
 
     // Aplica saída (empilhamento — cascata via --char-i no CSS)
     for (var i = 0; i < chars.length; i++) {
@@ -375,9 +381,10 @@
     // Tempo total de saída = duração + cascata do último char
     var totalOut = animOutMs + ((chars.length - 1) * charDelay);
 
-    // Fade out: duração total = tempo do empilhamento. Percentuais no CSS.
-    rotatorEl.style.setProperty('--fade-total', totalOut + 'ms');
-    rotatorEl.classList.add('is-exiting');
+    // Fade out: opacidade cai de 1→0 enquanto metade das letras empilham.
+    var fadeDur = Math.max(120, Math.floor(chars.length / 2) * charDelay);
+    rotatorEl.style.transition = 'opacity ' + fadeDur + 'ms linear';
+    rotatorEl.style.opacity = '0';
 
     // Troca a palavra quando a saída termina
     window.setTimeout(function () {
