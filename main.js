@@ -382,11 +382,11 @@
     // Tempo total de saída = duração + cascata do último char
     var totalOut = animOutMs + ((chars.length - 1) * charDelay);
 
-    // Fade out: opacidade cai de 1→0 ao longo de 60% do tempo total do empilhamento.
-    // Metade das letras já empilhou quando a opacidade chega a 0%.
-    // Resto do empilhamento acontece invisível.
+    // Fade out: delay de 25% pra deixar o empilhamento começar visível,
+    // depois opacidade cai ao longo de 60% do tempo total.
     var fadeDur = Math.round(totalOut * 0.6);
-    rotatorEl.style.transition = 'opacity ' + fadeDur + 'ms linear';
+    var fadeDelay = Math.round(totalOut * 0.25);
+    rotatorEl.style.transition = 'opacity ' + fadeDur + 'ms linear ' + fadeDelay + 'ms';
     rotatorEl.style.opacity = '0';
 
     // Troca a palavra quando a saída termina
