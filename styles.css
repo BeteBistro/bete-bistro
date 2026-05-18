@@ -783,24 +783,24 @@ body {
 }
 
 /* Fade in/out no container (não por char). Flat = linear, exceção à regra de pico.
-   Duração e delay são calculados no JS baseado no comprimento da palavra,
-   setados como --fade-duration e --fade-delay. */
+   Duração total = tempo do desempilhamento/empilhamento (--fade-total, setado no JS).
+   Percentuais nos keyframes controlam quando a opacidade muda. */
 .hero__title-rotator.is-entering {
-  animation: rotator-fade-in var(--fade-duration, 120ms) linear both;
+  animation: rotator-fade-in var(--fade-total, 500ms) linear both;
 }
 
 .hero__title-rotator.is-exiting {
-  animation: rotator-fade-out var(--fade-duration, 120ms) linear var(--fade-delay, 0ms) forwards;
+  animation: rotator-fade-out var(--fade-total, 500ms) linear forwards;
 }
 
 @keyframes rotator-fade-in {
-  from { opacity: 0; }
-  to   { opacity: 1; }
+  0%, 5%   { opacity: 0; }
+  20%, 100% { opacity: 1; }
 }
 
 @keyframes rotator-fade-out {
-  from { opacity: 1; }
-  to   { opacity: 0; }
+  0%, 80%   { opacity: 1; }
+  95%, 100% { opacity: 0; }
 }
 
 .hero__title-char {

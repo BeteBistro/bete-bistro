@@ -354,11 +354,9 @@
       spans[j].style.setProperty('--char-stack-x', (-dx) + 'px');
     }
 
-    // Fade in: chega em 100% quando falta 15% pro desempilhamento terminar.
-    // Duração = 85% do tempo total de entrada.
+    // Fade in: duração total = tempo do desempilhamento. Percentuais no CSS.
     var totalIn = animInMs + ((chars.length - 1) * charDelay);
-    rotatorEl.style.setProperty('--fade-duration', Math.round(totalIn * 0.85) + 'ms');
-    rotatorEl.style.removeProperty('--fade-delay');
+    rotatorEl.style.setProperty('--fade-total', totalIn + 'ms');
     rotatorEl.classList.add('is-entering');
   }
 
@@ -377,12 +375,8 @@
     // Tempo total de saída = duração + cascata do último char
     var totalOut = animOutMs + ((chars.length - 1) * charDelay);
 
-    // Fade out: começa 15% depois do início do empilhamento,
-    // termina quando a última letra se empilha.
-    var fadeDelay = Math.round(totalOut * 0.15);
-    var fadeDuration = totalOut - fadeDelay;
-    rotatorEl.style.setProperty('--fade-delay', fadeDelay + 'ms');
-    rotatorEl.style.setProperty('--fade-duration', fadeDuration + 'ms');
+    // Fade out: duração total = tempo do empilhamento. Percentuais no CSS.
+    rotatorEl.style.setProperty('--fade-total', totalOut + 'ms');
     rotatorEl.classList.add('is-exiting');
 
     // Troca a palavra quando a saída termina
