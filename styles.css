@@ -227,8 +227,8 @@ body {
 }
 
 .logo-anim.is-animating .logo-anim__rect   { animation-delay: 0ms; }
-.logo-anim.is-animating .logo-anim__bete   { animation-delay: 180ms; }
-.logo-anim.is-animating .logo-anim__bistro { animation-delay: 340ms; }
+.logo-anim.is-animating .logo-anim__bete   { animation-delay: 160ms; }
+.logo-anim.is-animating .logo-anim__bistro { animation-delay: 320ms; }
 
 @keyframes logo-entrance {
   0%   { transform: scaleX(1) scaleY(0);    opacity: 0; filter: blur(0px)   drop-shadow(0 0 0px rgba(56,18,0,0)); }
@@ -251,8 +251,8 @@ body {
 }
 
 .logo-anim.is-exiting .logo-anim__bistro { animation-delay: 0ms; }
-.logo-anim.is-exiting .logo-anim__bete   { animation-delay: 180ms; }
-.logo-anim.is-exiting .logo-anim__rect   { animation-delay: 340ms; }
+.logo-anim.is-exiting .logo-anim__bete   { animation-delay: 160ms; }
+.logo-anim.is-exiting .logo-anim__rect   { animation-delay: 320ms; }
 
 /* Mobile: logo encolhe 12px quando a gaveta tá aberta */
 @media (max-width: 768px) {
@@ -343,7 +343,7 @@ body {
 /* Collapsed state — nav some letra por letra, esquerda → direita */
 .header.is-collapsed .header__nav-item {
   margin-left: 0;
-  transition: margin-left 0.27s var(--ease-saida);
+  transition: margin-left 0.24s var(--ease-saida);
 }
 
 /* Stagger collapse pra margin-left */
@@ -358,8 +358,8 @@ body {
   max-width: 0;
   opacity: 0;
   transition:
-    letter-spacing 0.27s var(--ease-saida),
-    max-width 0.27s var(--ease-saida),
+    letter-spacing 0.24s var(--ease-saida),
+    max-width 0.24s var(--ease-saida),
     opacity 0.10s var(--ease-saida) 0.167s;
 }
 
@@ -528,12 +528,12 @@ body {
 
 .menu-btn.is-appearing {
   visibility: visible;
-  animation: menuAppear 0.27s var(--ease-bounce-in) forwards;
+  animation: menuAppear 0.24s var(--ease-bounce-in) forwards;
 }
 
 .menu-btn.is-disappearing {
   visibility: visible;
-  animation: menuDisappear 0.27s var(--ease-bounce-out) forwards;
+  animation: menuDisappear 0.24s var(--ease-bounce-out) forwards;
 }
 
 
@@ -849,14 +849,21 @@ body {
   transform-origin: left center;
 }
 
+@media (max-width: 768px) {
+  .hero__title-rotator {
+    transform-origin: center center;
+    --char-cascade: 0ms;
+  }
+}
+
 /* Entrada do container: scaleX 0→1 + opacity 0→1. Termina ANTES dos chars desempilharem. */
 .hero__title-rotator.is-scaling-in {
-  animation: rotator-scale-in var(--scale-dur, 180ms) linear both;
+  animation: rotator-scale-in var(--scale-dur, 160ms) linear both;
 }
 
 /* Saída do container: scaleX 1→0 + opacity 1→0. Começa DEPOIS dos chars empilharem. */
 .hero__title-rotator.is-scaling-out {
-  animation: rotator-scale-out var(--scale-dur, 180ms) linear forwards;
+  animation: rotator-scale-out var(--scale-dur, 160ms) linear forwards;
 }
 
 @keyframes rotator-scale-in {
@@ -880,13 +887,13 @@ body {
    criando overlap e continuidade de velocidade. --- */
 .hero__title-char:not(.is-leaving) {
   animation: hero-char-unstack 400ms var(--ease-entrada) backwards;
-  animation-delay: calc(var(--scale-offset, 108ms) + (var(--char-count, 1) - 1 - var(--char-i, 0)) * 30ms);
+  animation-delay: calc(var(--scale-offset, 40ms) + (var(--char-count, 1) - 1 - var(--char-i, 0)) * var(--char-cascade, 40ms));
 }
 
 /* --- Saída: empilha da última pra primeira (mesma ordem). Sem delay extra. --- */
 .hero__title-char.is-leaving {
-  animation: hero-char-stack 350ms var(--ease-saida) forwards;
-  animation-delay: calc((var(--char-count, 1) - 1 - var(--char-i, 0)) * 30ms);
+  animation: hero-char-stack 320ms var(--ease-saida) forwards;
+  animation-delay: calc((var(--char-count, 1) - 1 - var(--char-i, 0)) * var(--char-cascade, 40ms));
 }
 
 @keyframes hero-char-unstack {
@@ -1005,17 +1012,100 @@ body {
 
 
 /* ============================================================
-   NEXT SECTION (placeholder de scroll — substituir quando tiver conteúdo)
+   CATEGORIAS — "Conheça nossos produtos"
    ============================================================ */
-.next-section {
-  min-height: 100vh;
-  background: var(--color-marfim-300);
-  padding: clamp(60px, 10vh, 140px) var(--header-padding);
+
+/* Espaçamentos fluidos compartilhados (64 → 84 → 120)
+   Usado em: padding-top, gap título→cards, bleed verde */
+.categorias {
+  --cat-spacing: clamp(64px, max(53.157px + 3.012vw, -4.615px + 8.654vw), 120px);
+  --cat-card-w: clamp(280px, min(193.253px + 24.096vw, 341.538px + 9.615vw), 480px);
+  --cat-card-h: clamp(320px, min(211.566px + 30.12vw, 421.538px + 9.615vw), 560px);
+  --cat-card-r: clamp(8px, 5.333px + 0.741vw, 16px);
+  --cat-card-gap: clamp(12px, 9.831px + 0.602vw, 16px);
+  --cat-shrink: clamp(16px, 7.326px + 2.41vw, 32px);
+
+  /* Fundo bicolor: marfim no topo, verde-500 nos últimos cat-spacing pixels.
+     Corte duro (sem gradiente). O verde atrás dos cards vem daqui. */
+  background:
+    linear-gradient(
+      to bottom,
+      var(--color-marfim-300) calc(100% - var(--cat-spacing)),
+      var(--color-verde-500)  calc(100% - var(--cat-spacing))
+    );
+  padding-top: var(--cat-spacing);
+}
+
+.categorias__titulo {
+  font-family: var(--font-titulo);
+  font-size: var(--font-size-h1);
+  color: var(--color-laranja-500);
+  text-transform: uppercase;
+  text-align: center;
+  line-height: 1;
+  margin: 0;
+  padding: 6px var(--grid-margem) 0;   /* 6px topo: espaço pros acentos */
+}
+
+
+/* ---------- CAROUSEL ---------- */
+.categorias__carousel {
+  margin-top: var(--cat-spacing);
+  overflow: hidden;                  /* sem scroll nativo — posição via JS */
+  cursor: grab;
+  touch-action: pan-y pinch-zoom;   /* libera drag horizontal pro JS, mantém scroll vertical nativo */
+}
+
+.categorias__track {
+  display: flex;
+  gap: var(--cat-card-gap);
+  width: fit-content;
+  user-select: none;
+  /* translateX definido pelo JS pra centralizar o card/gap correto */
+}
+
+
+/* ---------- CARD ---------- */
+.categorias__card {
+  flex-shrink: 0;
+  width: var(--cat-card-w);
+  height: var(--cat-card-h);
+  text-decoration: none;
+  display: block;
+}
+
+.categorias__card-inner {
+  width: 100%;
+  height: 100%;
+  border-radius: var(--cat-card-r);
+  overflow: hidden;
+  background: var(--color-marfim-50);  /* placeholder — será substituído por imagem */
+  /* Scale suave sincronizado com snap (mesma duração + easing) */
+  transition: transform 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  will-change: transform;
+}
+
+/* Desktop: scale via hover (≥1200px).
+   --cat-sx/--cat-sy são setados pelo JS em measure(). */
+@media (min-width: 1200px) {
+  .categorias__card-inner {
+    transition: transform 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+  .categorias__card:hover .categorias__card-inner {
+    transform: scale(var(--cat-sx, 0.93), var(--cat-sy, 0.94));
+  }
+}
+
+
+/* ---------- DESTAQUE (placeholder — próxima seção) ---------- */
+.destaque {
+  background: var(--color-verde-500);
+  min-height: 60vh;
+  padding: 80px var(--grid-margem);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--color-cinza-500);
-  opacity: 0.4;
+  color: var(--color-verde-100);
   font-size: 14px;
 }
 

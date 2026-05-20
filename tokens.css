@@ -126,6 +126,23 @@
 
   --font-kerning-body: -0.01em;
 
+  /* Escala tipográfica fluida (360 → 1024 → 1440)
+     Valores extraídos do Figma: Responsivo.zip */
+  --font-size-hero:    clamp(48px, min(21.976px + 7.229vw, 36.923px + 5.769vw), 120px);
+  --font-size-h1:      clamp(40px, max(33.494px + 1.807vw, 22.462px + 2.885vw), 64px);
+  --font-size-h2:      clamp(36px, 29.333px + 1.852vw, 56px);
+  --font-size-h3:      clamp(32px, max(27.663px + 1.205vw, 20.308px + 1.923vw), 48px);
+  --font-size-h4:      clamp(28px, 24px + 1.111vw, 40px);
+  --font-size-s1:      24px;
+  --font-size-s2:      20px;
+  --font-size-s3:      18px;
+  --font-size-s4:      16px;
+  --font-size-s5:      14px;
+  --font-size-body-lg: 18px;
+  --font-size-body:    16px;
+  --font-size-body-md: 14px;
+  --font-size-caption: 12px;
+
 
   /* ----------------------------------------------------------
      ESCALA NUMÉRICA

@@ -94,6 +94,9 @@
   if (window.innerWidth > 1200 && window.scrollY <= 100) {
     document.getElementById('header').classList.remove('is-collapsed');
     document.getElementById('menuBtn').classList.remove('is-visible');
+  } else if (document.body.getAttribute('data-page') === 'home') {
+    /* Mobile/tablet home: esconde o btn pra animar junto com o logo */
+    document.getElementById('menuBtn').classList.remove('is-visible');
   }
 </script>
 
@@ -206,10 +209,47 @@
 
 
 <!-- ============================================================
-     PRÓXIMA SEÇÃO (placeholder — substituir quando tiver conteúdo)
+     CATEGORIAS — "Conheça nossos produtos"
      ============================================================ -->
-<section class="next-section">
-  [ Próxima seção — fundo marfim-300 ]
+<section class="categorias" id="categorias">
+
+  <h2 class="categorias__titulo">Conheça nossos produtos</h2>
+
+  <div class="categorias__carousel">
+    <div class="categorias__track">
+
+      <a href="/cesta-colonial" class="categorias__card" data-categoria="cesta-colonial">
+        <div class="categorias__card-inner">
+          <!-- Placeholder: imagem + lettering virão depois -->
+        </div>
+      </a>
+
+      <a href="/sazonais" class="categorias__card" data-categoria="sazonais">
+        <div class="categorias__card-inner">
+        </div>
+      </a>
+
+      <a href="/cafes-e-chocolates" class="categorias__card" data-categoria="cafes-chocolates">
+        <div class="categorias__card-inner">
+        </div>
+      </a>
+
+      <a href="/frescos-e-congelados" class="categorias__card" data-categoria="frescos-congelados">
+        <div class="categorias__card-inner">
+        </div>
+      </a>
+
+    </div>
+  </div>
+
+</section>
+
+
+<!-- ============================================================
+     DESTAQUE (placeholder — próxima seção, fundo verde)
+     ============================================================ -->
+<section class="destaque" id="destaque">
+  [ Destaque do momento — próxima seção ]
 </section>
 
 

@@ -76,17 +76,17 @@
       }
       isCollapsed = true;
       header.classList.add('is-collapsed');
-      setTimeout(showBtn, 270);
+      setTimeout(showBtn, 240);
     } else if (!shouldCollapse && isCollapsed) {
       isCollapsed = false;
       // Se a gaveta tiver aberta, fecha junto
       if (drawer.classList.contains('is-open')) closeDrawer();
       hideBtn();
-      // Expand começa quando ícone está ~50% sumido (135ms = metade dos 270ms de disappear)
+      // Expand começa quando ícone está ~50% sumido (120ms = metade dos 240ms de disappear)
       expandTimer = setTimeout(function () {
         expandTimer = null;
         header.classList.remove('is-collapsed');
-      }, 135);
+      }, 120);
     }
   }
 
@@ -293,46 +293,39 @@
   /* ============================================================
      4. HERO — ROTATOR DO TÍTULO ("Artesanal" → "Caseira" → "De mãe" ...)
 
-     Sincronizado com o looping do vídeo: tempo total das 5 palavras = duração do vídeo.
-     Cada palavra ocupa videoDuration/5 ms (display + animações). O displayTime de cada
+     Sincronizado com o looping do vídeo: tempo total das 4 palavras = duração do vídeo.
+     Cada palavra ocupa videoDuration/4 ms (display + animações). O displayTime de cada
      palavra é o que sobra depois de descontar suas animações — palavras maiores ficam
      menos tempo estáticas (porque gastaram mais tempo na cascata).
      ============================================================ */
   var rotatorEl   = document.querySelector('.hero__title-rotator');
   var heroVideoEl = document.querySelector('.hero__video');
-  var palavras    = ['Artesanal', 'Caseira', 'De mãe', 'De vó', 'Saborosa'];
+  var palavras    = ['Artesanal', 'Caseira', 'De mãe', 'De vó'];
   var rotatorIdx  = 0;
-  var charDelay   = 30;               // ms entre cascata de cada char
-  var animOutMs   = 350;              // duração da animação de saída por char
-  var animInMs    = 400;              // duração da animação de entrada por char
-  var scaleDur    = 180;              // duração do scaleX + opacity no container
-  var scaleOffset = Math.round(scaleDur * 0.2);  // chars começam quando scale tá em ~20%
+  var charDelay   = 40;               // ms entre cascata de cada char (0.5x base 80ms)
+  var animOutMs   = 320;              // duração da animação de saída por char (4x)
+  var animInMs    = 400;              // duração da animação de entrada por char (5x)
+  var scaleDur    = 160;              // duração do scaleX + opacity no container (2x)
+  var scaleOffset = 40;               // chars começam quando scale tá em ~25% (0.5x)
 
-  // Fallback caso o vídeo não carregue metadata: 1s display por palavra
+  // Tempo total fixo por palavra: 2.8s (35x base 80ms)
+  var wordCycleMs = 2800;
+
   var displayTimes = palavras.map(function () { return 1000; });
 
-  function calcDisplayTimes(videoDurationMs) {
-    var timePerWord = videoDurationMs / palavras.length;
+  function calcDisplayTimes() {
     return palavras.map(function (word) {
       var n = word.length;
-      var totalStack = animOutMs + (n - 1) * charDelay;
       var totalEntry = scaleOffset + animInMs + (n - 1) * charDelay;
+      var totalStack = animOutMs + (n - 1) * charDelay;
       var totalExit  = Math.max(totalStack, Math.round(totalStack * 0.35) + scaleDur);
-      return Math.max(300, timePerWord - totalEntry - totalExit);
+      return Math.max(300, wordCycleMs - totalEntry - totalExit);
     });
   }
 
-  function maybeUpdateDisplayTimes() {
-    if (!heroVideoEl) return;
-    var dur = heroVideoEl.duration;
-    if (!dur || isNaN(dur) || !isFinite(dur) || dur === 0) return;
-    displayTimes = calcDisplayTimes(dur * 1000);
-  }
+  displayTimes = calcDisplayTimes();
 
-  if (heroVideoEl) {
-    if (heroVideoEl.readyState >= 1) maybeUpdateDisplayTimes();
-    heroVideoEl.addEventListener('loadedmetadata', maybeUpdateDisplayTimes);
-  }
+  // Display times fixos (não dependem do vídeo)
 
   function splitWordToChars(word) {
     if (!rotatorEl) return;
@@ -356,10 +349,23 @@
     }
 
     // Mede offsetLeft de cada char pra calcular o translateX de empilhamento.
-    var refX = spans[0] ? spans[0].offsetLeft : 0;
-    for (var j = 0; j < spans.length; j++) {
-      var dx = spans[j].offsetLeft - refX;
-      spans[j].style.setProperty('--char-stack-x', (-dx) + 'px');
+    // Mobile: stack-x SIMÉTRICO (chars tratados como largura igual) pra
+    //   funcionar com transform-origin: center sem assimetria.
+    // Desktop: stack-x real (baseado em offsetLeft, origin: left).
+    var isMobile = window.innerWidth < 769;
+    if (isMobile) {
+      var evenStep = rotatorEl.offsetWidth / spans.length;
+      var mid = (spans.length - 1) / 2;
+      for (var j = 0; j < spans.length; j++) {
+        var dx = (j - mid) * evenStep;
+        spans[j].style.setProperty('--char-stack-x', (-dx) + 'px');
+      }
+    } else {
+      var refX = spans[0] ? spans[0].offsetLeft : 0;
+      for (var j = 0; j < spans.length; j++) {
+        var dx = spans[j].offsetLeft - refX;
+        spans[j].style.setProperty('--char-stack-x', (-dx) + 'px');
+      }
     }
 
     // ScaleX 0→1 + opacity 0→1. Chars ficam parados (delay inclui scaleDur no CSS).
@@ -419,8 +425,8 @@
       } else {
         heroVideoEl.addEventListener('playing', startRotator, { once: true });
       }
-      // Fallback: se autoplay não disparar em 800ms, inicia mesmo assim
-      setTimeout(startRotator, 800);
+      // Fallback: se autoplay não disparar em 640ms (8x), inicia mesmo assim
+      setTimeout(startRotator, 640);
     } else {
       startRotator();
     }
@@ -443,7 +449,11 @@
       // Remove a classe depois da entrada terminar pra liberar o click
       setTimeout(function () {
         logoAnim.classList.remove('is-animating');
-      }, 980);
+      }, 960);
+
+      // Menu-btn entra com stagger após o logo (5x base 80ms).
+      // Só em mobile/tablet (header colapsado). Desktop não precisa (nav expandido).
+      if (isCollapsed) setTimeout(showBtn, 400);
     }
 
     // Saída: click na logo → animação reversa → navega pra home
@@ -476,9 +486,306 @@
         // Navega pra home depois da animação terminar
         setTimeout(function () {
           window.location.href = logoLink.href;
-        }, 980);
+        }, 960);
       });
     }
   }
 
+})();
+
+
+/* ============================================================
+   CATEGORIAS — Carousel infinito com drag + snap + loop
+   Clona os 4 cards nas duas pontas. Ao snapar num clone,
+   pula instantaneamente pro card real equivalente.
+   ============================================================ */
+(function () {
+  var carousel = document.querySelector('.categorias__carousel');
+  var track = document.querySelector('.categorias__track');
+  if (!carousel || !track) return;
+
+  var originals = Array.prototype.slice.call(
+    track.querySelectorAll('.categorias__card')
+  );
+  var N = originals.length;
+  if (N < 2) return;
+
+  /* --- Clonar cards: [clones do grupo] + [originais] + [clones do grupo] --- */
+  var preFrag = document.createDocumentFragment();
+  var postFrag = document.createDocumentFragment();
+  for (var i = 0; i < N; i++) {
+    var pre = originals[i].cloneNode(true);
+    pre.setAttribute('aria-hidden', 'true');
+    pre.removeAttribute('href');
+    preFrag.appendChild(pre);
+
+    var post = originals[i].cloneNode(true);
+    post.setAttribute('aria-hidden', 'true');
+    post.removeAttribute('href');
+    postFrag.appendChild(post);
+  }
+  track.insertBefore(preFrag, track.firstChild);
+  track.appendChild(postFrag);
+
+  /* Agora o track tem 3×N cards: [0..N-1] clones | [N..2N-1] reais | [2N..3N-1] clones */
+  var allCards = track.querySelectorAll('.categorias__card');
+  var totalCards = allCards.length;  // 3 * N
+
+  var currentTx = 0;
+  var isDragging = false;
+  var startX = 0;
+  var dragStartTx = 0;
+  var cardW, cardH, gap, step, groupWidth, scaleX, scaleY;
+  var activeIdx = -1;   // índice do card ativo (mais próximo do centro)
+
+  function measure() {
+    cardW = allCards[0].offsetWidth;
+    cardH = allCards[0].offsetHeight;
+    gap = parseFloat(getComputedStyle(track).gap) || 16;
+    step = cardW + gap;
+    groupWidth = N * step;
+
+    // Shrink: lê do CSS custom property
+    var shrink = parseFloat(
+      getComputedStyle(carousel.closest('.categorias')).getPropertyValue('--cat-shrink')
+    ) || 32;
+    scaleX = (cardW - shrink) / cardW;
+    scaleY = (cardH - shrink) / cardH;
+
+    // Expõe como CSS custom properties pro hover desktop usar
+    var section = carousel.closest('.categorias');
+    if (section) {
+      section.style.setProperty('--cat-sx', scaleX);
+      section.style.setProperty('--cat-sy', scaleY);
+    }
+  }
+
+  function txForCardCenter(idx) {
+    return carousel.offsetWidth / 2 - (idx * step + cardW / 2);
+  }
+
+  /* --- Scale: card ativo (mais perto do centro) faz downscale --- */
+  function isDesktop() { return carousel.offsetWidth >= 1200; }
+
+  function clearAllInlineScales() {
+    for (var i = 0; i < totalCards; i++) {
+      var inner = allCards[i].querySelector('.categorias__card-inner');
+      if (inner) inner.style.transform = '';
+    }
+    activeIdx = -1;
+  }
+
+  function updateCardScales() {
+    // Desktop: scale é via CSS :hover, limpa qualquer inline residual
+    if (isDesktop()) {
+      if (activeIdx >= 0) clearAllInlineScales();
+      return;
+    }
+
+    var vwCenter = carousel.offsetWidth / 2;
+    var bestIdx = -1;
+    var bestDist = Infinity;
+
+    for (var i = 0; i < totalCards; i++) {
+      var cardCenter = i * step + cardW / 2 + currentTx;
+      var dist = Math.abs(cardCenter - vwCenter);
+      if (dist < bestDist) {
+        bestDist = dist;
+        bestIdx = i;
+      }
+    }
+
+    if (bestIdx === activeIdx) return;
+
+    // Remove escala do anterior
+    if (activeIdx >= 0 && activeIdx < totalCards) {
+      var prevInner = allCards[activeIdx].querySelector('.categorias__card-inner');
+      if (prevInner) prevInner.style.transform = '';
+    }
+
+    // Aplica escala no novo ativo
+    activeIdx = bestIdx;
+    if (activeIdx >= 0 && activeIdx < totalCards) {
+      var newInner = allCards[activeIdx].querySelector('.categorias__card-inner');
+      if (newInner) newInner.style.transform = 'scale(' + scaleX + ', ' + scaleY + ')';
+    }
+  }
+
+  /* --- Snap pro card mais próximo do centro --- */
+  var isSnapping = false;
+
+  function snapToNearest(animate) {
+    if (animate === undefined) animate = true;
+
+    var viewCenter = -currentTx + carousel.offsetWidth / 2;
+    var idx = Math.round((viewCenter - cardW / 2) / step);
+    idx = Math.max(0, Math.min(idx, totalCards - 1));
+
+    currentTx = txForCardCenter(idx);
+
+    if (animate) {
+      isSnapping = true;
+      track.style.transition = 'transform 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
+    } else {
+      track.style.transition = 'none';
+    }
+    track.style.transform = 'translateX(' + currentTx + 'px)';
+    updateCardScales();
+  }
+
+  /* --- Loop: reposiciona pro grupo real se tiver nos clones.
+         Usado tanto no snap (transitionend) quanto DURANTE drag/wheel. --- */
+  function wrapPosition() {
+    var viewCenter = -currentTx + carousel.offsetWidth / 2;
+    var idx = Math.round((viewCenter - cardW / 2) / step);
+    var shift = 0;
+
+    if (idx < N) {
+      shift = -groupWidth;
+    } else if (idx >= 2 * N) {
+      shift = groupWidth;
+    } else {
+      return false;
+    }
+
+    currentTx += shift;
+    dragStartTx += shift;
+
+    // Atualiza activeIdx pro equivalente no grupo real (sem animação visual)
+    if (activeIdx >= 0) {
+      var newActive = shift < 0 ? activeIdx + N : activeIdx - N;
+      // Desliga transition, troca o ativo, religa
+      if (newActive >= 0 && newActive < totalCards) {
+        var oldInner = allCards[activeIdx].querySelector('.categorias__card-inner');
+        var newInner = allCards[newActive].querySelector('.categorias__card-inner');
+        if (oldInner) { oldInner.style.transition = 'none'; oldInner.style.transform = ''; }
+        if (newInner) { newInner.style.transition = 'none'; newInner.style.transform = 'scale(' + scaleX + ',' + scaleY + ')'; }
+        activeIdx = newActive;
+        // Força reflow e religa transition
+        void track.offsetHeight;
+        if (oldInner) oldInner.style.transition = '';
+        if (newInner) newInner.style.transition = '';
+      }
+    }
+
+    track.style.transition = 'none';
+    track.style.transform = 'translateX(' + currentTx + 'px)';
+    return true;
+  }
+
+  // Após animação de snap, faz o jump se necessário
+  track.addEventListener('transitionend', function () {
+    isSnapping = false;
+    wrapPosition();
+  });
+
+  /* --- Posição inicial (no grupo real, índices N..2N-1) --- */
+  function setInitialPosition() {
+    measure();
+    var vw = carousel.offsetWidth;
+
+    if (vw >= 768) {
+      // Desktop + Tablet: card real 2 (índice N+1) centralizado
+      currentTx = txForCardCenter(N + 1);
+    } else {
+      // Mobile: card real 1 (índice N) centralizado
+      currentTx = txForCardCenter(N);
+    }
+
+    track.style.transition = 'none';
+    track.style.transform = 'translateX(' + currentTx + 'px)';
+    activeIdx = -1;
+    updateCardScales();
+  }
+
+  /* --- Drag (pointer events = touch + mouse) --- */
+  carousel.addEventListener('pointerdown', function (e) {
+    if (e.button !== 0) return;
+    isDragging = true;
+    isSnapping = false;
+    startX = e.clientX;
+    dragStartTx = currentTx;
+    track.style.transition = 'none';
+    carousel.setPointerCapture(e.pointerId);
+    carousel.style.cursor = 'grabbing';
+  });
+
+  carousel.addEventListener('pointermove', function (e) {
+    if (!isDragging) return;
+    var dx = e.clientX - startX;
+    currentTx = dragStartTx + dx;
+    track.style.transform = 'translateX(' + currentTx + 'px)';
+    wrapPosition();
+    updateCardScales();
+  });
+
+  function endDrag() {
+    if (!isDragging) return;
+    isDragging = false;
+    carousel.style.cursor = '';
+    snapToNearest();
+  }
+
+  carousel.addEventListener('pointerup', endDrag);
+  carousel.addEventListener('pointercancel', endDrag);
+  carousel.addEventListener('dragstart', function (e) { e.preventDefault(); });
+
+  /* --- Prevenir click em links se houve drag significativo --- */
+  var dragThreshold = 5;
+  carousel.addEventListener('click', function (e) {
+    var dx = Math.abs((startX || 0) - (e.clientX || 0));
+    if (dx > dragThreshold) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+  }, true);
+
+  /* --- Scroll lateral via touchpad/wheel --- */
+  var wheelTimer = null;
+  var prevAbsDelta = 0;
+  carousel.addEventListener('wheel', function (e) {
+    if (Math.abs(e.deltaX) < Math.abs(e.deltaY)) return;
+    e.preventDefault();
+
+    // Se tá no meio de um snap mas o usuário scrollou com força, cancela o snap
+    if (isSnapping) {
+      if (Math.abs(e.deltaX) > 4) {
+        isSnapping = false;
+        track.style.transition = 'none';
+      } else {
+        return;  // momentum residual, deixa o snap terminar
+      }
+    }
+
+    track.style.transition = 'none';
+    currentTx -= e.deltaX;
+    track.style.transform = 'translateX(' + currentTx + 'px)';
+    wrapPosition();
+    updateCardScales();
+
+    var absDelta = Math.abs(e.deltaX);
+    clearTimeout(wheelTimer);
+
+    // Quando a velocidade tá caindo e ficou pequena, snapa imediatamente
+    // (o scroll tá desacelerando, snap pega o bastão antes de parar)
+    if (absDelta <= 2 && prevAbsDelta > absDelta) {
+      prevAbsDelta = 0;
+      snapToNearest();
+    } else {
+      // Fallback curto pra quando os eventos param de vez
+      wheelTimer = setTimeout(function () {
+        prevAbsDelta = 0;
+        snapToNearest();
+      }, 80);
+    }
+
+    prevAbsDelta = absDelta;
+  }, { passive: false });
+
+  /* --- Init + resize --- */
+  setInitialPosition();
+  window.addEventListener('resize', function () {
+    measure();
+    setInitialPosition();
+  });
 })();
